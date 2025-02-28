@@ -20,7 +20,10 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/test', function () {
-    return  Inertia::render('Tes', ['name' => 'jefyokta']);
+    return  Inertia::render('Tes', ['name' => 'jefyokta', "chapter" => [
+        "number" => 1,
+        "text" => "PENDAHULUAN"
+    ]]);
 });
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

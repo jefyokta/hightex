@@ -13,14 +13,20 @@ import TableHeader from "@tiptap/extension-table-header"
 import TableRow from "@tiptap/extension-table-row"
 import CustomHeading from "@/Tiptap/Extenstions/CustomHeading"
 
-
+interface DocumentProps extends PageProps {
+    chapter:{
+        number:number;
+        text:string;
+    }
+}
 const Tes: React.FC = () => {
-    const { props } = usePage<PageProps>()
+
+
+    const { props } = usePage<DocumentProps>()
     const extensions = [
-        StarterKit.configure({ heading: false }),
-        CustomHeading,
+        StarterKit,
+        CustomHeading(props.chapter.text),
         Underline,
-        // Strike,
         Table,
         TableCell,
         TableHeader,

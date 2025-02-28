@@ -1,46 +1,44 @@
 import Heading from '@tiptap/extension-heading'
 import { Plugin } from '@tiptap/pm/state'
 
-const CustomHeading = Heading.extend({
-  renderHTML({ node, HTMLAttributes }) {
-    return [
-      `h${node.attrs.level}`,
-      {
-        ...HTMLAttributes,
-        contenteditable: node.attrs.level === 1 ? 'false' : 'true',
-      },
-      0,
-    ]
-  },
+const CustomHeading = (title: string) =>
+  Heading.extend({
+    name: "heading",
 
-  addCommands() {
-    return {
-      setHeading:
-        (attrs) =>
-        ({ commands }) => {
-          if (attrs.level === 1) {
-            return false
-          }
-          return commands.toggleNode('heading', 'paragraph', attrs)
+    renderHTML({ node, HTMLAttributes }) {
+      return [
+        `h${node.attrs.level}`,
+        {
+          ...HTMLAttributes,
+          contenteditable: node.attrs.level === 1 ? 'false' : 'true',
         },
-    }
-  },
+        0,
+      ]
+    },
 
-  addProseMirrorPlugins() {
-    return [
-      new Plugin({
-        appendTransaction: (transactions, oldState, newState) => {
-          const doc = newState.doc
-          const firstNode = doc.firstChild
-          if (!firstNode || firstNode.type.name !== 'heading' || firstNode.attrs.level !== 1) {
-            return newState.tr.insert(0, newState.schema.nodes.heading.create({ level: 1 }))
-          }
+    addProseMirrorPlugins() {
+      return [
+        new Plugin({
+          appendTransaction: (transactions, oldState, newState) => {
+            const { doc } = newState
+            const firstNode = doc.firstChild
 
-          return null
-        },
-      }),
-    ]
-  },
-})
+            if (!firstNode || firstNode.type.name !== 'heading' || firstNode.attrs.level !== 1) {
+              const tr = newState.tr.insert(
+                0,
+                newState.schema.nodes.heading.create(
+                  { level: 1 },
+                  newState.schema.text(title) 
+                )
+              )
+              return tr
+            }
+
+            return null
+          },
+        }),
+      ]
+    },
+  })
 
 export default CustomHeading

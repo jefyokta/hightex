@@ -1,18 +1,21 @@
-import { Head } from "@inertiajs/react";
+import { PageProps } from "@/types";
+import { Head, usePage } from "@inertiajs/react";
 import { EditorContext, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { PropsWithChildren } from "react";
-
+interface MyPageProps extends PageProps {
+    chapter?: number
+  }
 const EditorLayout: React.FC<PropsWithChildren> = ({ children }) => {
 
-
+    const { props } = usePage<MyPageProps>()
     return (
 
         <>
             <Head title="HighTex">
                 <style>{`
           #page {
-            counter-reset: h1-counter ;
+            counter-reset: h1-counter ${props.chapter ? props.chapter -1 : ""};
             height: max-content;
           }
 
