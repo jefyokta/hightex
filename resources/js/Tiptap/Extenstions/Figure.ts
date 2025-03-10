@@ -11,8 +11,22 @@ export type FigureOptions = {
   label: string;
   comments?: string;
 };
+declare module '@tiptap/core' {
+    interface Commands<ReturnType> {
+      figure: {
+        /**
+         * Set a blockquote node
+         */
+        setLabeledImage: (attrs:FigureOptions) => ReturnType,
+
+       deleteLabeledImage: () => ReturnType,
+      }
+    }
+  }
 export const CenteredLabeledImage: string =
   "display:flex;flex-direction:column;align-items:center;";
+
+
 
 export const Figure = Node.create<FigureOptions>({
   name: "figure",
@@ -106,25 +120,34 @@ export const Figure = Node.create<FigureOptions>({
     ];
   },
 
-  addCommands(): Partial<any> {
+  addCommands():Partial<any> {
     return {
       setLabeledImage:
-        (attrs: {
-          src: string;
-          width: string;
-          caption: string;
-          centered: boolean;
-          cite: string;
-        }) =>
-        ({ commands }: CommandProps) => {
-          return commands.updateAttributes(this.name, attrs);
+        (attrs: FigureOptions) =>
+        ({ chain }:CommandProps) => {
+          return chain()
+            .insertContent({
+              type: this.name,
+              attrs,
+              content: [
+                {
+                  type: "figcaption",
+                  content: [
+                    { type: "text", text: attrs.caption },
+                  ],
+                },
+              ],
+            }).run()
+            ;
         },
 
       deleteLabeledImage:
         () =>
-        ({ commands, editor }: CommandProps) => {
+        ({ commands }:CommandProps) => {
           return commands.deleteNode(this.name);
         },
     };
-  },
+  }
+
+
 });

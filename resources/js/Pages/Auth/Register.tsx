@@ -9,7 +9,7 @@ import { FormEventHandler } from 'react';
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
-        email: '',
+        nim: '',
         password: '',
         password_confirmation: '',
     });
@@ -45,20 +45,20 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="nim" value="Nim" />
 
                     <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
+                        id="nim"
+                        type="nim"
+                        name="nim"
+                        value={data.nim}
+                        className="mt-1 p-2 block border-slate-100 w-full"
+                        autoComplete="nim"
+                        onChange={(e) => setData('nim', e.target.value)}
                         required
                     />
 
-                    <InputError message={errors.email} className="mt-2" />
+                    <InputError message={errors.nim} className="mt-2" />
                 </div>
 
                 <div className="mt-4">

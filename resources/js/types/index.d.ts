@@ -12,3 +12,24 @@ export type PageProps<
         user: User;
     };
 };
+
+export type DocumentData = {
+    id:string,
+    title: string,
+    author: any,
+    keywords?: string,
+    abstract?: string
+}
+
+
+export interface DocumentProps extends PageProps {
+    content: {
+        contents: any,
+        main: {
+            number: number,
+            text: string
+        }, name: string
+    },
+    chapter: string,
+    document: DocumentData
+}

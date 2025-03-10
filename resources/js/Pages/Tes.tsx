@@ -17,6 +17,7 @@ interface DocumentProps extends PageProps {
     chapter:{
         number:number;
         text:string;
+        content:any;
     }
 }
 const Tes: React.FC = () => {
@@ -47,9 +48,6 @@ const Tes: React.FC = () => {
 
                 <div id="page" className="page">
                     <EditorContent editor={editor} ></EditorContent>
-
-
-
                 </div>
             </div>
         </EditorLayout >

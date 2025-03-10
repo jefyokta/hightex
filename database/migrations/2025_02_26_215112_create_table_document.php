@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->string('title');
-            $table->string('type');
             $table->string('author');
-            $table->text("abstract");
-            $table->text("keywords");
+            $table->text("abstract")->nullable();
+            $table->text("keywords")->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
         });

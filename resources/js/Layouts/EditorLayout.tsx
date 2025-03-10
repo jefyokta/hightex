@@ -3,9 +3,10 @@ import { Head, usePage } from "@inertiajs/react";
 import { EditorContext, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { PropsWithChildren } from "react";
+import { Toaster } from "react-hot-toast";
 interface MyPageProps extends PageProps {
     chapter?: number
-  }
+}
 const EditorLayout: React.FC<PropsWithChildren> = ({ children }) => {
 
     const { props } = usePage<MyPageProps>()
@@ -15,7 +16,6 @@ const EditorLayout: React.FC<PropsWithChildren> = ({ children }) => {
             <Head title="HighTex">
                 <style>{`
           #page {
-            counter-reset: h1-counter ${props.chapter ? props.chapter -1 : ""};
             height: max-content;
           }
 
@@ -45,14 +45,29 @@ const EditorLayout: React.FC<PropsWithChildren> = ({ children }) => {
             counter-reset: h3-counter;
           }
         .page table {
-            border-collapse: collapse;
-            width: 100%;
+            max-width: 100%;
             border-bottom: 1px solid black;
         }
+        .page table td, table th {
+        position: relative;
+        }
+
+        .page table th::after, table td::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 2px;
+        height: 100%;
+        cursor: col-resize;
+        background-color: rgba(0, 0, 0, 0.02);
+        }
+
 
         .page th,
         .page td {
             text-align: left;
+            width:auto;
         }
 
         .page th {
@@ -64,6 +79,10 @@ const EditorLayout: React.FC<PropsWithChildren> = ({ children }) => {
 
           .page h2::before {
             content: counter(h1-counter) "." counter(h2-counter) " ";
+            font-weight: bold;
+          }
+        .page h3::before {
+            content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) ;
             font-weight: bold;
           }
 
@@ -247,6 +266,8 @@ const EditorLayout: React.FC<PropsWithChildren> = ({ children }) => {
 
 
             {children}
+            <Toaster />
+
         </>
     );
 };

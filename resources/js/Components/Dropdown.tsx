@@ -38,7 +38,7 @@ const Trigger = ({ children }: PropsWithChildren) => {
 
     return (
         <>
-            <div onClick={toggleOpen}>{children}</div>
+            <div onClick={toggleOpen} className='cursor-pointer'>{children}</div>
 
             {open && (
                 <div

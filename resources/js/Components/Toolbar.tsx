@@ -1,9 +1,60 @@
 import { Editor, useCurrentEditor } from "@tiptap/react"
+import Dropdown from "./Dropdown"
+import { DocumentData, DocumentProps } from "@/types"
+import { Link, usePage } from "@inertiajs/react"
+import SecondaryButton from "./SecondaryButton"
+import PrimaryButton from "./PrimaryButton"
+import { useEffect, useState } from "react"
+import toast, { Toaster } from "react-hot-toast"
 
 type ToolbarProps = {
-    editor: Editor | null
+    editor: Editor | null,
+    documentData: DocumentData,
+    chapter: string
+
 }
-const Toolbar: React.FC<ToolbarProps> = ({ editor }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter }) => {
+
+    const { props } = usePage<DocumentProps>()
+    const [canSave, setCanSave] = useState<boolean>(true)
+    const Save = async () => {
+        setCanSave(false)
+        const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '';
+
+        const result = await fetch(`/document/${props.content.name}`, {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrf
+            },
+            body: JSON.stringify({ data: editor?.getJSON() })
+        });
+
+        if (!result.ok) {
+            toast.error("Failed to saving document");
+            setCanSave(true);
+            return
+
+        }
+        toast.success("Saved !", { position: 'bottom-right' });
+
+        setCanSave(true);
+
+    }
+    // useEffect(() => {
+    //     console.log(editor?.getJSON().content , props.content.contents);
+
+    //     if (editor?.getJSON() !== props.content) {
+
+    //         setCanSave(true)
+
+    //     }
+    //     else {
+    //         setCanSave(false)
+    //     }
+    // },[])
+
+
     return (<div className="menu p-5 pt-1 backdrop-blur shadow-sm flex h-36 justify-between">
         <div className="first">
             <div className="p-2 flex items-end">
@@ -37,7 +88,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor }) => {
                 </div>
                 <div className="title"></div>
                 <span className="font-bold text-xl  mr-4">HighTex</span>
-                <span className="text-slate-500 text-sm truncate max-w-36">Test Title</span> <span className="text-slate-500 text-sm">/ Chapter </span>
+                <span className="text-slate-500 text-sm truncate max-w-36">{documentData.title}</span> <span className="text-slate-500 text-sm">/ {chapter} </span>
             </div>
 
             <div id="tools" className="text-indigo-900 flex space-x-2">
@@ -177,13 +228,57 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor }) => {
         <div className="second p-2">
             <div className="user-info flex flex-col items-end">
                 <p className="font-semibold text-md">Jepi Oktamipa</p>
-                <p className="text-sm">12250314612</p>
+                <p className="text-sm mb-1">12250314612</p>
+                <Dropdown>
+                    <Dropdown.Trigger >
+                        <div className="py-1 mr-2 text-sm px-2 flex text-slate-500 space-x-1 border-indigo-700/20 border bg-white shadow-md rounded-md">
+
+                            <span>
+                                {chapter}
+                            </span>
+                            <svg
+                                className="-me-0.5 ms-2  w-4"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+
+                        </div>
+                    </Dropdown.Trigger>
+                    <Dropdown.Content>
+                        <div className="p-2 flex flex-col space-y-1">
+                            <Link className={`${chapter == 'Bab 1' ? 'bg-indigo-700 text-white hover:bg-indigo-500' : 'hover:bg-slate-100'}  p-1 px-1.5 text-sm rounded-md`} href={`/document/${documentData.id}/bab1`} >Bab 1</Link>
+                            <Link className={`${chapter == 'Bab 2' ? 'bg-indigo-700 text-white hover:bg-indigo-500' : 'hover:bg-slate-100'}  p-1 px-1.5 text-sm rounded-md`} href={`/document/${documentData.id}/bab2`}>Bab 2</Link>
+                            <Link className={`${chapter == 'Bab 3' ? 'bg-indigo-700 text-white hover:bg-indigo-500' : 'hover:bg-slate-100'}  p-1 px-1.5 text-sm rounded-md`} href={`/document/${documentData.id}/bab3`}>Bab 3</Link>
+                            <Link className={`${chapter == 'Bab 4' ? 'bg-indigo-700 text-white hover:bg-indigo-500' : 'hover:bg-slate-100'}  p-1 px-1.5 text-sm rounded-md`} href={`/document/${documentData.id}/bab4`}>Bab 4</Link>
+                            <Link className={`${chapter == 'Bab 5' ? 'bg-indigo-700 text-white hover:bg-indigo-500' : 'hover:bg-slate-100'}  p-1 px-1.5 text-sm rounded-md`} href={`/document/${documentData.id}/bab5`}>Bab 5</Link>
+                            <Link className={`${chapter == 'Bab 6' ? 'bg-indigo-700 text-white hover:bg-indigo-500' : 'hover:bg-slate-100'}  p-1 px-1.5 text-sm rounded-md`} href={`/document/${documentData.id}/bab6`}>Bab 6</Link>
+                        </div>
+                    </Dropdown.Content>
+                </Dropdown>
+                <div className="m-2 flex space-x-2">
+                    <div>
+
+                        <PrimaryButton onClick={() => Save()} disabled={!canSave} >
+                            Save
+                        </PrimaryButton>
+                    </div>
+                    <SecondaryButton>
+                        <Link href="/document">Back</Link>
+                    </SecondaryButton>
+
+                </div>
             </div>
         </div>
 
     </div>)
 
 }
-
 
 export default Toolbar
