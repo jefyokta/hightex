@@ -1,19 +1,29 @@
-import { Node } from "@tiptap/core";
+import { mergeAttributes, Node } from '@tiptap/core'
 
-type FigCaptionProps = {
-  content: any;
-};
+export const FigCaption = Node.create({
+  name: 'figcaption',
 
-export const FigCaption = Node.create<FigCaptionProps>({
-  name: "figcaption",
-  content: "inline* cite",
-  parseHTML() {
-    return [{ tag: "figcaption" }];
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+    }
   },
+
+  content: 'inline*',
+
   selectable: false,
+
   draggable: false,
-  atom: false,
-  renderHTML({ node, HTMLAttributes }) {
-    return ["figcaption", HTMLAttributes, node.attrs.content];
+
+  parseHTML() {
+    return [
+      {
+        tag: 'figcaption',
+      },
+    ]
   },
-});
+
+  renderHTML({ HTMLAttributes }) {
+    return ['figcaption', mergeAttributes(HTMLAttributes), 0]
+  },
+})

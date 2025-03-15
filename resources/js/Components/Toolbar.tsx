@@ -1,58 +1,32 @@
-import { Editor, useCurrentEditor } from "@tiptap/react"
+import { Editor, JSONContent, useCurrentEditor } from "@tiptap/react"
 import Dropdown from "./Dropdown"
 import { DocumentData, DocumentProps } from "@/types"
 import { Link, usePage } from "@inertiajs/react"
 import SecondaryButton from "./SecondaryButton"
 import PrimaryButton from "./PrimaryButton"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
+import { MainContext } from "@/Context/MainContext"
+import { Save } from "@/Utilities/Save"
 
 type ToolbarProps = {
     editor: Editor | null,
     documentData: DocumentData,
     chapter: string
+    mytest: () => void
 
 }
-const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter, mytest }) => {
 
+    const ctx = useContext(MainContext)
     const { props } = usePage<DocumentProps>()
+
+
+
     const [canSave, setCanSave] = useState<boolean>(true)
-    const Save = async () => {
-        setCanSave(false)
-        const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '';
 
-        const result = await fetch(`/document/${props.content.name}`, {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrf
-            },
-            body: JSON.stringify({ data: editor?.getJSON() })
-        });
 
-        if (!result.ok) {
-            toast.error("Failed to saving document");
-            setCanSave(true);
-            return
 
-        }
-        toast.success("Saved !", { position: 'bottom-right' });
-
-        setCanSave(true);
-
-    }
-    // useEffect(() => {
-    //     console.log(editor?.getJSON().content , props.content.contents);
-
-    //     if (editor?.getJSON() !== props.content) {
-
-    //         setCanSave(true)
-
-    //     }
-    //     else {
-    //         setCanSave(false)
-    //     }
-    // },[])
 
 
     return (<div className="menu p-5 pt-1 backdrop-blur shadow-sm flex h-36 justify-between">
@@ -154,7 +128,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter }) => {
                                 </g>
                             </svg>
                             <span className="text-sm">
-
                                 Ordered
                             </span>
                         </button>
@@ -184,7 +157,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter }) => {
                 <div className="p-2 bg-white/70 max-w-max rounded-sm shadow-md">
                     <div className="font-bold">Components</div>
                     <div className="flex space-x-1 text-slate-800 px-2">
-                        <button className="cursor-pointer  flex max-w-max hover:bg-slate-100 p-1 rounded-sm ">
+                        <button className="cursor-pointer  flex max-w-max hover:bg-slate-100 p-1 rounded-sm "
+                            onClick={() => ctx?.setSidebar({ el: 'images', props: { images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdnLs_X7GU83NaWkq3XKEOlHU8oh0_jPMcyw&s'] } })}
+                        >
                             <svg viewBox="0 0 24 24" className="w-4" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -200,7 +175,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter }) => {
                                 Image
                             </span>
                         </button>
-                        <button onClick={() => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} className="cursor-pointer flex  hover:bg-slate-100 p-1 rounded-sm ">
+                        <button
+                            disabled={editor?.isActive('figureTable')}
+                            onClick={() => editor?.chain().focus().addFigureTable()} className="cursor-pointer flex  hover:bg-slate-100 p-1 rounded-sm ">
                             <svg viewBox="0 0 24 24" className="w-4" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -219,7 +196,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter }) => {
                 <div className="p-2 bg-white/70 rounded-sm shadow-md">
                     <div className="font-bold">Utilities</div>
                     <div className="flex space-x-1 text-slate-800 px-2">
-                        <button className="cursor-pointer hover:bg-slate-100 p-1 rounded-sm ">Citation</button>
+                        <button className="cursor-pointer hover:bg-slate-100 p-1 rounded-sm " onClick={() => mytest()}>Citation</button>
                         <button className="cursor-pointer hover:bg-slate-100 p-1 rounded-sm ">Math</button>
                     </div>
                 </div>
@@ -265,7 +242,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter }) => {
                 <div className="m-2 flex space-x-2">
                     <div>
 
-                        <PrimaryButton onClick={() => Save()} disabled={!canSave} >
+                        <PrimaryButton onClick={async () => {
+                            setCanSave(false)
+                            await Save(props,editor)
+                            setCanSave(true)
+                        }} disabled={!canSave} >
                             Save
                         </PrimaryButton>
                     </div>

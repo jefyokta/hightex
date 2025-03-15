@@ -1,3 +1,4 @@
+import { Content } from "@tiptap/react";
 export interface User {
     id: number;
     name: string;

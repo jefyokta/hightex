@@ -33,7 +33,7 @@ export const Figure = Node.create<FigureOptions>({
 
   group: "block",
 
-  content: "block figcaption",
+  content: "image figcaption",
 
   defining: true,
   isolating: true,
