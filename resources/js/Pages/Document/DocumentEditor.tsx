@@ -20,10 +20,7 @@ import { FigureTable } from "@/Tiptap/Extenstions/FigureTable"
 import { Caption } from "@/Tiptap/Extenstions/Caption"
 import { FigureImage } from "@/Tiptap/Extenstions/FigureImage"
 import { Image } from "@/Tiptap/Extenstions/Image"
-import { PageNode, PaginationExtension } from "@/Tiptap/Extenstions/Page"
-import { Save, SaveOnLoad } from "@/Utilities/Save"
-import toast from "react-hot-toast"
-
+import {  SaveOnLoad } from "@/Utilities/Save"
 
 
 const DocumentEditor: React.FC = () => {
@@ -43,7 +40,13 @@ const DocumentEditor: React.FC = () => {
         FigureImage,
         Image,
         Caption,
-        columnResizing as any
+        // Pagination.configure({
+        //     pageWidth: 794,
+        //     pageHeight: 1123,
+        //     // pageMargin: { top: 113, right: 113, bottom: 151, left: 151 },
+        // }),
+        columnResizing as any,
+
     ]
 
 
@@ -88,7 +91,14 @@ const DocumentEditor: React.FC = () => {
                     location.reload()
                 }, 1000);
             }
-        }
+        },
+        onUpdate({ editor }) {
+            try {
+              editor.view.updateState(editor.state);
+            } catch (error) {
+              console.error("Update Error:", error);
+            }
+          }
 
     })
 

@@ -10,35 +10,47 @@ const CustomHeading = (title: string) =>
         `h${node.attrs.level}`,
         {
           ...HTMLAttributes,
-          contenteditable: node.attrs.level === 1 ? 'false' : 'true',
+        //   contenteditable: node.attrs.level === 1 ? 'false' : 'true',
         },
         0,
       ]
     },
 
     addProseMirrorPlugins() {
-      return [
-        new Plugin({
-          appendTransaction: (transactions, oldState, newState) => {
-            const { doc } = newState
-            const firstNode = doc.firstChild
+        return [
+          new Plugin({
+            appendTransaction: (transactions, oldState, newState) => {
+              const { doc } = newState
+              const firstNode = doc.firstChild
 
-            if (!firstNode || firstNode.type.name !== 'heading' || firstNode.attrs.level !== 1) {
-              const tr = newState.tr.insert(
-                0,
-                newState.schema.nodes.heading.create(
-                  { level: 1 },
-                  newState.schema.text(title) 
+              if (!firstNode) {
+                return newState.tr.insert(
+                  0,
+                  newState.schema.nodes.heading.create(
+                    { level: 1 },
+                    newState.schema.text(title)
+                  )
                 )
-              )
-              return tr
-            }
+              }
 
-            return null
-          },
-        }),
-      ]
-    },
+              if (firstNode.type.name !== 'heading' || firstNode.attrs.level !== 1) {
+                return newState.tr.insert(
+                  0,
+                  newState.schema.nodes.heading.create(
+                    { level: 1 },
+                    firstNode.type.name === 'text'
+                      ? firstNode
+                      : newState.schema.text(title)
+                  )
+                )
+              }
+
+              return null
+            },
+          }),
+        ]
+      }
+
   })
 
 export default CustomHeading

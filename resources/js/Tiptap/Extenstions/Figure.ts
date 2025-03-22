@@ -11,18 +11,7 @@ export type FigureOptions = {
   label: string;
   comments?: string;
 };
-declare module '@tiptap/core' {
-    interface Commands<ReturnType> {
-      figure: {
-        /**
-         * Set a blockquote node
-         */
-        setLabeledImage: (attrs:FigureOptions) => ReturnType,
 
-       deleteLabeledImage: () => ReturnType,
-      }
-    }
-  }
 export const CenteredLabeledImage: string =
   "display:flex;flex-direction:column;align-items:center;";
 

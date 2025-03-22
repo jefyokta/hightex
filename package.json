@@ -51,7 +51,9 @@
     "@tiptap/starter-kit": "^2.11.5",
     "@tiptap/suggestion": "^2.11.5",
     "bibtex.js": "^0.0.12-beta",
+    "playwright": "^1.51.0",
     "prosemirror-tables": "^1.6.4",
-    "react-hot-toast": "^2.5.2"
+    "react-hot-toast": "^2.5.2",
+    "tiptap-pagination-breaks": "^1.0.3"
   }
 }

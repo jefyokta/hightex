@@ -178,7 +178,13 @@ export const style =
           .tiptap {
             min-height: max-content;
           }
+        .page-break {
+            height: 20px;
+            width: 100%;
+            border-top: 1px dashed #ccc;
+            margin: 10px 0;
 
+        }
           .tiptap:focus {
             outline: none;
           }
@@ -236,31 +242,6 @@ export const style =
             border-spacing: 5px;
           }
 
-          @media print {
-            * {
-              visibility: hidden;
-            }
-
-            #page {
-              visibility: visible;
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              overflow: visible;
-              border: none;
-              box-shadow: none;
-              margin: 0 !important;
-            }
-
-            .page-break {
-              visibility: hidden;
-            }
-
-            #page * {
-              visibility: visible;
-            }
           }
 
           .menu {
@@ -270,4 +251,33 @@ export const style =
             width: 100%;
             z-index: 100;
           }
+           .page h1 {
+                position: relative;
+            }
+
+            .page h1:hover::after {
+                opacity: 1;
+            }
+
+            .page h1::after {
+                content: "Editable, But won't affected";
+                white-space: nowrap;
+                background-color:rgba(1, 1, 1, 0.45);
+                border-radius: 5px;
+                color: white;
+                position: absolute;
+                text-align: center;
+                z-index: 555;
+                opacity: 0;
+                transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+                pointer-events: none;
+                height: max-content;
+                font-size: 12px;
+                font-family: var(--font-mono,system-ui); ;
+                right:50%;
+                padding: 0 .4em;
+                top: -5px;
+            }
+
+}
         `
