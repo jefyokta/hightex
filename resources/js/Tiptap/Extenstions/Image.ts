@@ -141,11 +141,6 @@ declare module "@tiptap/core"{
 
 
 
-  },addKeyboardShortcuts() {
-    return {
-      "Delete": () => this.editor.commands.deleteImage(),
-      "Backspace": () => this.editor.commands.deleteImage(),
-    };
   }
 
 

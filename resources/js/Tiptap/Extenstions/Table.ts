@@ -59,29 +59,28 @@ const CustomTableCell = TableCell.extend({
   },
   addNodeView() {
     return ({ node }) => {
-      const td = document.createElement('td');
-      const wrapper = document.createElement('div');
-      td.setAttribute('align', node.attrs.align);
-      wrapper.style.display = 'flex';
-      wrapper.style.flexDirection = "row"
-    //   wrapper.style.width = '100%';
-      wrapper.style.alignItems = "center";
-      wrapper.style.justifyContent = node.attrs.align === 'center' ? 'center' : node.attrs.align === 'right' ? 'flex-end' : 'flex-start';
-      td.appendChild(wrapper);
-      return {
-        dom: td,
-        contentDOM: wrapper,
-        update(updatedNode) {
-          if (updatedNode.type !== node.type) return false;
-          node = updatedNode;
-          td.setAttribute('align', node.attrs.align);
-          td.setAttribute('colspan',node.attrs.colspan)
-          td.setAttribute('rowspan',node.attrs.rowspan)
-          wrapper.style.justifyContent = node.attrs.align === 'center' ? 'center' : node.attrs.align === 'right' ? 'flex-end' : 'flex-start';
-          return true;
-        },
+        const td = document.createElement('td');
+        const wrapper = document.createElement('div');
+        td.setAttribute('align', 'center');
+        wrapper.style.display = 'flex';
+        wrapper.style.flexDirection = "row"
+        wrapper.style.alignItems = "center";
+        wrapper.style.justifyContent = "center";
+        td.appendChild(wrapper);
+        return {
+          dom: td,
+          contentDOM: wrapper,
+          update(updatedNode) {
+            if (updatedNode.type !== node.type) return false;
+            node = updatedNode;
+            td.setAttribute('align', 'center');
+            td.setAttribute('colspan',node.attrs.colspan)
+            td.setAttribute('rowspan',node.attrs.rowspan)
+            wrapper.style.justifyContent = "center";
+            return true;
+          },
+        };
       };
-    };
   },
   addCommands(): Partial<any> {
     return {

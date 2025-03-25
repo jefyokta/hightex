@@ -127,11 +127,11 @@ export const FigureTable = Figure.extend({
 
               ],
             }).run(),
-            deleteFigureTable:()=>   this.editor
+            deleteFigureTable:()=> {return  this.editor
             .chain()
             .focus()
-            .deleteNode('figureTable')
-            .run()
+            .deleteNode('figureTable')}
+
 
         }
 

@@ -83,7 +83,7 @@ const TableSetting: React.FC<TableSettingOptions> = ({ editor }) => {
                 <div className="flex px-0.5 py-0.5">
                     <button
                         onClick={() => {
-                            editor?.chain().focus().deleteFigureTable().run()
+                            editor?.chain().focus().deleteNode("figureTable").run()
                         }}
                        className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-red-800 rounded-md text-white">Delete Table</button>
                 </div>

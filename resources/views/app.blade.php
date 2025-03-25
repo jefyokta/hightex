@@ -13,10 +13,12 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
+
     @routes
     @viteReactRefresh
     @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
     @inertiaHead
+
     <script>
         window.addEventListener("load", () => {
             localStorage.removeItem('document-saved')
@@ -26,7 +28,6 @@
 
 <body class="font-sans antialiased">
     @inertia
-    {{-- <script src="http://127.0.0.1:5500/index.js"></script> --}}
 
 </body>
 

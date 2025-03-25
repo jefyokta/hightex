@@ -1,1 +1,1 @@
-# A document editor 
+# Make Your Thesis Easily? :D

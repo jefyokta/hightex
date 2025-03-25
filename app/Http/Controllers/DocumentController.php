@@ -31,7 +31,7 @@ class DocumentController extends Controller
                 if ($c['attrs']['level'] !== 1) {
                     $result[] = $c;
                 }
-            }else {
+            } else {
 
                 $result[] = $c;
             }
@@ -107,15 +107,23 @@ class DocumentController extends Controller
         }
     }
 
-    public function delete(Document $document){
+    public function delete(Document $document)
+    {
 
         Storage::disk('local')->deleteDirectory("documents/{$document->id}");
         $document->delete();
-        return ;
-
-
+        return back()->with('success', 'Document Terhapus!');
     }
 
 
-    public function compile() {}
+    public function compile(Document $document)
+    {
+
+        $files =  Storage::disk('local')->allFiles("documents/{$document->id}");
+
+        foreach ($files as $file) {
+            $object = json_decode($file);
+            // $object->compile();
+        }
+    }
 }
