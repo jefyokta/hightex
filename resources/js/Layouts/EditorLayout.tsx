@@ -14,9 +14,9 @@ const EditorLayout: React.FC<PropsWithChildren> = ({ children }) => {
             <Head title="HighTex">
                 <style>{style}</style>
             </Head>
-
-
-            {children}
+            <div className="bg-slate-50">
+                {children}
+            </div>
             <Toaster />
 
         </>

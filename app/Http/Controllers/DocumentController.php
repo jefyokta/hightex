@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
-use function Illuminate\Log\log;
-use function Pest\Laravel\json;
 
 class DocumentController extends Controller
 {
@@ -78,6 +76,7 @@ class DocumentController extends Controller
     public function save(Request $request, $chapter)
     {
         try {
+            sleep(2);
             $requestData = json_decode($request->getContent(), true);
 
             if (!$requestData) {

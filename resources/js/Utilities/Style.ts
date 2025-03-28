@@ -13,7 +13,7 @@ export const style =
             margin-bottom: 10pt;
             margin-top: 10pt;
           }
-            .page img::focus{
+        .page img::focus{
             @apply ring-blue-500
             }
           .page h1::before {
@@ -162,8 +162,6 @@ export const style =
             width: 21cm;
             min-height: 29.7cm;
             background: rgb(255, 255, 255);
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 3cm 3cm 4cm 4cm;
             margin: 3cm auto;
             font-family: 'Times New Roman', Times, serif;

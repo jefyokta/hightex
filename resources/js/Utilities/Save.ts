@@ -3,7 +3,7 @@ import { DocumentProps } from "@/types";
 import toast from "react-hot-toast";
 import { Editor } from "@tiptap/react";
 
-export const Save = async (props:DocumentProps,editor?:Editor|null):Promise<boolean>=> {
+export const Save = async (props:DocumentProps,editor?:Editor|null):Promise<any>=> {
     const contents = props.content.contents
     if (!editor) throw new Error(`Editor has not been initialized`);;
     editor.commands.blur();
@@ -23,7 +23,7 @@ export const Save = async (props:DocumentProps,editor?:Editor|null):Promise<bool
         }
         const data = cachedData && cachedData == editorData ? cachedData : editorData
         try {
-            const result = await fetch(`/document/${props.content.name}`, {
+            const result = fetch(`/document/${props.content.name}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -31,18 +31,24 @@ export const Save = async (props:DocumentProps,editor?:Editor|null):Promise<bool
                 },
                 body: data
             });
-            if (!result.ok) {
-                localStorage.setItem("document-cache", data);
-                toast.error("Request Error, document has been saved in your local");
-                return false
-            }
-            localStorage.removeItem('document-cache')
-            toast.success("Saved!");
-            return true
+            toast.promise(result,{
+                loading:"Saving",
+                success:()=>{
+                    localStorage.removeItem('document-cache')
+                    return "Saved"
+
+                },
+                error:()=>{
+                    localStorage.setItem("document-cache", data);
+                    toast.error("Error, document has been saved in your local");
+                    return "Request Error, document has been saved in your local"
+                }
+            })
+
         } catch (error) {
             console.error("Save error:", error);
             localStorage.setItem("document-cache", data);
-            toast.error("Failed to save document. Check your internet connection.");
+            // toast.error("Failed to save document. Check your internet connection.");
             return false
         }
 };

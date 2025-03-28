@@ -77,7 +77,7 @@ const TableSetting: React.FC<TableSettingOptions> = ({ editor }) => {
             <hr />
             <div>
                 <div className="flex justify-start items-center my-2 space-x-2">
-                    <input type="checkbox" checked={ctx?.tableHelper} onChange={() => ctx?.setTableHelper(!ctx.tableHelper)} className="rounded-full w-4 h-4 text-indigo-500 focus:ring-0 border-0 shadow-sm" />
+                    <input type="checkbox" checked={ctx?.tableHelper} onChange={() => ctx?.setTableHelper(!ctx.tableHelper)} className="rounded-full w-4 h-4 text-indigo-500 focus:ring-0 border-0 shadow-md border border-[0.5px]" />
                     <span className="text-xs">Show edge helper</span>
                 </div>
                 <div className="flex px-0.5 py-0.5">

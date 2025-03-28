@@ -63,7 +63,7 @@ const CustomTableCell = TableCell.extend({
         const wrapper = document.createElement('div');
         td.setAttribute('align', 'center');
         wrapper.style.display = 'flex';
-        wrapper.style.flexDirection = "row"
+        wrapper.style.flexDirection = "column"
         wrapper.style.alignItems = "center";
         wrapper.style.justifyContent = "center";
         td.appendChild(wrapper);

@@ -1,5 +1,4 @@
-import { useEditor, EditorContent, Extension, AnyExtension, Content } from "@tiptap/react"
-
+import { useEditor, EditorContent, FloatingMenu } from "@tiptap/react"
 import Sidebar, { SideBarProps } from "@/Components/Sidebar"
 import Toolbar from "@/Components/Toolbar"
 import { MainContext } from "@/Context/MainContext"
@@ -20,7 +19,10 @@ import { FigureTable } from "@/Tiptap/Extenstions/FigureTable"
 import { Caption } from "@/Tiptap/Extenstions/Caption"
 import { FigureImage } from "@/Tiptap/Extenstions/FigureImage"
 import { Image } from "@/Tiptap/Extenstions/Image"
-import {  SaveOnLoad } from "@/Utilities/Save"
+import { SaveOnLoad } from "@/Utilities/Save"
+import { CellMenu, DefaultMenu } from "@/Components/Menu"
+import { DeleteContent } from "@/Components/DeleteContent"
+
 
 
 const DocumentEditor: React.FC = () => {
@@ -40,11 +42,7 @@ const DocumentEditor: React.FC = () => {
         FigureImage,
         Image,
         Caption,
-        // Pagination.configure({
-        //     pageWidth: 794,
-        //     pageHeight: 1123,
-        //     // pageMargin: { top: 113, right: 113, bottom: 151, left: 151 },
-        // }),
+        FloatingMenu,
         columnResizing as any,
 
     ]
@@ -57,7 +55,12 @@ const DocumentEditor: React.FC = () => {
         content: content
     }
 
-    const [sidebar, setSidebar] = useState<SideBarProps>({});
+    const [menuActiveTab, setMenuActiveTab] = useState("format");
+
+    const [sidebar, setSidebar] = useState<SideBarProps>({
+        el: "images",
+        props: []
+    });
     const [tableHelper, setTableHelper] = useState<boolean>(false)
 
 
@@ -73,18 +76,11 @@ const DocumentEditor: React.FC = () => {
         extensions,
         content: content ? schema : "",
         onSelectionUpdate({ editor }) {
-            if (editor.isActive("table")) {
-                setSidebar({ el: 'table', props: { editor } })
-            } else if (editor.isActive("image") || editor.isActive('imageFigure')) {
-                setSidebar({ el: 'images', props: { asSingleImage: true } })
 
-            }
-            else {
-                setSidebar({})
-            }
 
         },
         onCreate: async ({ editor }) => {
+
             const response = await SaveOnLoad(props)
             if (response && response.ok) {
                 setTimeout(() => {
@@ -94,11 +90,11 @@ const DocumentEditor: React.FC = () => {
         },
         onUpdate({ editor }) {
             try {
-              editor.view.updateState(editor.state);
+                editor.view.updateState(editor.state);
             } catch (error) {
-              console.error("Update Error:", error);
+                console.error("Update Error:", error);
             }
-          }
+        }
 
     })
 
@@ -127,12 +123,61 @@ const DocumentEditor: React.FC = () => {
 
                     </style>
                 </Head>}
-                <Sidebar />
                 <Toolbar editor={editor} mytest={handleprint} documentData={props.document} chapter={props.chapter} />
-                <div id="container" className="flex justify-center overflow-auto h-screen   pt-36  space-x-2  min-h-screen p-5">
-                    <div id="page" className="page" style={{ counterReset: `h1-counter ${props.content.main.number - 1}` }}>
-                        <EditorContent editor={editor} ></EditorContent>
+                <Sidebar />
+                <div className="flex justify-center h-full  w-full space-x-2  pt-36" id="container" >
+                    <div id="page" className="page  border-slate-200 shadow-lg border " style={{ counterReset: `h1-counter ${props.content.main.number - 1}` }}>
+                        <EditorContent editor={editor} />
                     </div>
+
+                    {editor && (
+                        <FloatingMenu
+                            editor={editor}
+                            tippyOptions={{
+                                duration: 100,
+                                appendTo: () => document.getElementById('container') as HTMLDivElement
+                            }}
+                            shouldShow={({ state }) => {
+                                const { from, to } = state.selection;
+                                return from !== to;
+                            }}
+                            className="bg-white shadow-lg text-xs font-mono p-2 max-w-max z-50 absolute rounded-lg flex flex-col"
+                        >
+                            <div className="flex border-b">
+                                <button
+                                    onClick={() => setMenuActiveTab("format")}
+                                    className={`px-3 py-1 ${menuActiveTab === "format" ? "border-b-2 border-blue-500" : ""}`}
+                                >
+                                    Format
+                                </button>
+                                <button
+                                    onClick={() => setMenuActiveTab("table")}
+                                    className={`px-3 py-1 ${menuActiveTab === "table" ? " border-b-2 border-blue-500" : ""}`}
+                                >
+                                    Table
+                                </button>
+                            </div>
+                            <div className="flex gap-2 p-2">
+                                {menuActiveTab === "format" &&
+                                    DefaultMenu({ editor }).map(({ content, onClick }, i) => (
+                                        <button key={i} onClick={onClick} className="px-1 w-6 rounded-md hover:bg-slate-200 cursor-pointer">
+                                            {content}
+                                        </button>
+                                    ))}
+
+                                {menuActiveTab === "table" &&
+                                    CellMenu({ editor }).map(({ content, onClick }, i) => (
+                                        <button key={i} onClick={onClick} className="px-1 min-w-6 max-w-max rounded-md hover:bg-slate-200 cursor-pointer">
+                                            {content}
+                                        </button>
+                                    ))}
+                                <DeleteContent editor={editor} />
+
+                            </div>
+
+
+                        </FloatingMenu>
+                    )}
                 </div>
             </MainContext.Provider>
         </EditorLayout >

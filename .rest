@@ -1,1 +1,0 @@
-POST https://xv1.dapatkanbansosspkh2025.kggaw.com/req/thr.php
