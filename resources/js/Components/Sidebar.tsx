@@ -26,7 +26,16 @@ export default function Sidebar() {
             transform transition-transform duration-400 ease-in-out
             ${ctx?.sidebar.el ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}`}
             >
-                <div className="border-b p-2 text-sm border-slate-200">test</div>
+                <div style={{ scrollbarWidth: "none", msOverflowStyle: 'none' }} className="border-b rounded-lg  p-2 text-sm border-slate-100 flex overflow-x-scroll  space-x-1" >
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer" onClick={()=>ctx?.setSidebar({el:'table'})}>Table</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer" onClick={()=>ctx?.setSidebar({el:'images'})}>Image</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
+                </div>
                 {Component && <Component {...ctx?.sidebar.props} />}
             </div>
         </div>

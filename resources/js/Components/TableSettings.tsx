@@ -2,11 +2,10 @@ import { MainContext } from "@/Context/MainContext"
 import { Editor } from "@tiptap/react"
 import { addColumnAfter } from "prosemirror-tables"
 import { useContext, useState } from "react"
-type TableSettingOptions = {
-    editor: Editor | null,
-}
-const TableSetting: React.FC<TableSettingOptions> = ({ editor }) => {
+
+const TableSetting: React.FC = () => {
     const ctx = useContext(MainContext)
+    const editor = ctx?.editor
 
     return (
         <div className="p-5 w-full  space-y-3 ">

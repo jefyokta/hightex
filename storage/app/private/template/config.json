@@ -1,12 +1,16 @@
 {
-    "document_title":"",
-    "abstract":{
-        "indonesian":"",
-        "english":""
+    "name":"config",
+    "contents":{
+        "document_title":"",
+        "abstract":{
+            "indonesian":"",
+            "english":""
+        },
+        "keyowords":{
+            "english":"",
+            "indonesian":""
+        }
     },
-    "keyowords":{
-        "english":"",
-        "indonesian":""
-    }
+    "type":"config"
 
 }

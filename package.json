@@ -50,6 +50,7 @@
         "@tiptap/suggestion": "^2.11.5",
         "bibtex.js": "^0.0.12-beta",
         "prosemirror-tables": "^1.6.4",
+        "puppeteer": "^24.4.0",
         "react-hot-toast": "^2.5.2",
         "tailwindcss": "^4.0.17",
         "tiptap-pagination-breaks": "^1.0.3"

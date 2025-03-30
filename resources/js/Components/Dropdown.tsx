@@ -15,8 +15,8 @@ const DropDownContext = createContext<{
     toggleOpen: () => void;
 }>({
     open: false,
-    setOpen: () => {},
-    toggleOpen: () => {},
+    setOpen: () => { },
+    toggleOpen: () => { },
 });
 
 const Dropdown = ({ children }: PropsWithChildren) => {
@@ -57,7 +57,7 @@ const Content = ({
     children,
 }: PropsWithChildren<{
     align?: 'left' | 'right';
-    width?: '48';
+    width?: '48' | string;
     contentClasses?: string;
 }>) => {
     const { open, setOpen } = useContext(DropDownContext);
@@ -72,9 +72,9 @@ const Content = ({
 
     let widthClasses = '';
 
-    if (width === '48') {
-        widthClasses = 'w-48';
-    }
+
+    widthClasses = `w-${width}`;
+
 
     return (
         <>

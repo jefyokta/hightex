@@ -238,19 +238,22 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter, mytest
                             <p className="text-xs text-slate-500 mb-1">12250314612</p>
                         </div>
                         <div className="m-2 flex space-x-2">
-                            <div>
-
-                                <PrimaryButton onClick={async () => {
+                            <div className="flex space-x-3">
+                                <button className="p-1 font-semibold px-2 cursor-pointer hover:text-slate-100 bg-green-700 text-xs rounded-lg text-white shadow-md my-2 ring ring-green-400/20 ring-4" onClick={async () => {
                                     setCanSave(false)
                                     await Save(props, editor)
                                     setCanSave(true)
                                 }} disabled={!canSave}  >
                                     Save
-                                </PrimaryButton>
+                                </button>
+                                <button className="p-1 font-semibold px-2 cursor-pointer hover:text-slate-100 bg-slate-700 text-xs rounded-lg text-white shadow-md my-2 ring ring-slate-400/20 ring-4" >
+
+                                    <Link href="/dashboard">
+                                    Back
+                                    </Link>
+                                </button>
                             </div>
-                            <SecondaryButton>
-                                <Link href="/document">Back</Link>
-                            </SecondaryButton>
+
 
                         </div>
                     </div>

@@ -40,7 +40,9 @@ Route::post('/login', function (Request $request) {
 
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Dashboard', [
+        'document' => Auth::user()->document
+    ]);
 })->middleware(['auth'])->name('dashboard');
 Route::get('/test', function () {
     return  Inertia::render('Tes', ['name' => 'jefyokta', "chapter" => [
@@ -49,6 +51,7 @@ Route::get('/test', function () {
     ]]);
 });
 Route::middleware('auth')->group(function () {
+    Route::get('/test',[DocumentController::class,'compile']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

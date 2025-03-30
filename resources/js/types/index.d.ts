@@ -34,3 +34,10 @@ export interface DocumentProps extends PageProps {
     chapter: string,
     document: DocumentData
 }
+
+
+
+interface DocumentPageProps extends PageProps {
+        document: DocumentData | false
+
+}

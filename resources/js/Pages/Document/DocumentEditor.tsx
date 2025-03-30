@@ -20,8 +20,9 @@ import { Caption } from "@/Tiptap/Extenstions/Caption"
 import { FigureImage } from "@/Tiptap/Extenstions/FigureImage"
 import { Image } from "@/Tiptap/Extenstions/Image"
 import { SaveOnLoad } from "@/Utilities/Save"
-import { CellMenu, DefaultMenu } from "@/Components/Menu"
+import { CellMenu, DefaultMenu, ImageMenu } from "@/Components/Menu"
 import { DeleteContent } from "@/Components/DeleteContent"
+import Dropcursor from "@tiptap/extension-dropcursor"
 
 
 
@@ -43,6 +44,7 @@ const DocumentEditor: React.FC = () => {
         Image,
         Caption,
         FloatingMenu,
+        Dropcursor,
         columnResizing as any,
 
     ]
@@ -54,23 +56,17 @@ const DocumentEditor: React.FC = () => {
         type: "doc",
         content: content
     }
-
-    const [menuActiveTab, setMenuActiveTab] = useState("format");
-
     const [sidebar, setSidebar] = useState<SideBarProps>({
-        el: "images",
-        props: []
+        el: "table",
+
     });
+    const [menuActiveTab, setMenuActiveTab] = useState<"format" | "table" | "image">("format");
+
+
     const [tableHelper, setTableHelper] = useState<boolean>(false)
 
 
-    const handleprint = () => {
-
-
-    }
-
-
-
+    const handleprint = () => { }
     const editor = useEditor({
         editable: true,
         extensions,
@@ -97,6 +93,7 @@ const DocumentEditor: React.FC = () => {
         }
 
     })
+
 
 
 
@@ -139,11 +136,12 @@ const DocumentEditor: React.FC = () => {
                             }}
                             shouldShow={({ state }) => {
                                 const { from, to } = state.selection;
+
                                 return from !== to;
                             }}
-                            className="bg-white shadow-lg text-xs font-mono p-2 max-w-max z-50 absolute rounded-lg flex flex-col"
+                            className="bg-white shadow-lg text-xs  p-2 max-w-max z-50 absolute rounded-lg flex flex-col"
                         >
-                            <div className="flex border-b">
+                            <div className="flex border-b border-slate-200">
                                 <button
                                     onClick={() => setMenuActiveTab("format")}
                                     className={`px-3 py-1 ${menuActiveTab === "format" ? "border-b-2 border-blue-500" : ""}`}
@@ -156,23 +154,31 @@ const DocumentEditor: React.FC = () => {
                                 >
                                     Table
                                 </button>
+                                <button
+                                    onClick={() => setMenuActiveTab("image")}
+                                    className={`px-3 py-1 ${menuActiveTab === "image" ? " border-b-2 border-blue-500" : ""}`}
+                                >
+                                    Image
+                                </button>
                             </div>
                             <div className="flex gap-2 p-2">
                                 {menuActiveTab === "format" &&
-                                    DefaultMenu({ editor }).map(({ content, onClick }, i) => (
-                                        <button key={i} onClick={onClick} className="px-1 w-6 rounded-md hover:bg-slate-200 cursor-pointer">
+                                    DefaultMenu({ editor }).map(({ content, onClick, disabled }, i) => (
+                                        <button key={i} onClick={onClick} className={`px-1 w-6 rounded-md hover:bg-slate-200  ${disabled ? "bg-slate-500" : ""} cursor-pointer`}>
                                             {content}
                                         </button>
                                     ))}
 
                                 {menuActiveTab === "table" &&
-                                    CellMenu({ editor }).map(({ content, onClick }, i) => (
-                                        <button key={i} onClick={onClick} className="px-1 min-w-6 max-w-max rounded-md hover:bg-slate-200 cursor-pointer">
+                                    CellMenu({ editor }).map(({ content, onClick, disabled }, i) => (
+                                        <button key={i} onClick={onClick} disabled={disabled} className="px-1 min-w-6 max-w-max rounded-md hover:bg-slate-200 group disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-300 cursor-pointer">
                                             {content}
                                         </button>
                                     ))}
+                                {menuActiveTab === "image" && ImageMenu({ editor }).map(({ content, disabled, onClick }, i) => {
+                                    return (<button key={i} onClick={onClick} disabled={disabled} className="px-1 min-w-6 max-w-max rounded-md hover:bg-slate-200 group disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-300 cursor-pointer">{content}</button>)
+                                })}
                                 <DeleteContent editor={editor} />
-
                             </div>
 
 

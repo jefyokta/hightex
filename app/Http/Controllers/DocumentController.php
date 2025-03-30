@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Service\Compiler;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-
+use Spatie\Browsershot\Browsershot;
 
 class DocumentController extends Controller
 {
@@ -115,14 +117,65 @@ class DocumentController extends Controller
     }
 
 
-    public function compile(Document $document)
+    public function compile()
     {
 
-        $files =  Storage::disk('local')->allFiles("documents/{$document->id}");
+        try {
 
-        foreach ($files as $file) {
-            $object = json_decode($file);
-            // $object->compile();
+
+            $document = Auth::user()->document;
+
+            $files =  Storage::disk('local')->allFiles("documents/{$document->id}");
+
+            $json = Storage::disk('local')->get("documents/{$document->id}/bab1.json");
+
+            $docs = [];
+
+            foreach ($files as $file) {
+                $filesArr = explode('.', $file);
+                $fileExt = end($filesArr);
+                if ($fileExt && $fileExt == 'json') {
+                    $json =   Storage::disk('local')->get($file);
+                    $object =  json_decode($json, false);
+
+
+                    if (!isset($object->type) || $object->type !== 'bab') {
+                        continue;
+                    }
+                    if ($object->type == 'bab') {
+                        $node = (object) [
+                            'type' => "heading",
+                            'attrs' => (object) ['level' => 1],
+                            'content' => [(object) [
+                                'type' => "text",
+                                'text' => $object->main->text
+                            ]]
+                        ];
+
+                        $object->contents = array_merge([$node], is_array($object->contents) ? $object->contents : []);
+                    }
+
+                    $docs =  array_merge($docs, is_array($object->contents) ? $object->contents : []);
+                }
+            }
+
+            // dd($docs);
+            $result = (new Compiler)->compile($docs);
+            // dd($result);
+
+            $pdfContent = Browsershot::html(view('pdf', ['html' => $result])->render())
+                ->setNodeBinary('/Users/jefyokta/Library/Application\\ Support/Herd/config/nvm/versions/node/v22.12.0/bin/node')
+                ->setNpmBinary('/Users/jefyokta/Library/Application\\ Support/Herd/config/nvm/versions/node/v22.12.0/bin/npm')
+                ->margins(3, 3, 4, 4,'cm')
+                ->format('A4')
+                ->pdf();
+
+            return response($pdfContent)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="document.pdf"');
+        } catch (\Throwable $th) {
+            dd($th);
+            throw $th;
         }
     }
 }
