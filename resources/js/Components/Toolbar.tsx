@@ -84,7 +84,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter, mytest
                                         </svg>
                                     </p>
                                 </Dropdown.Trigger>
-                                <Dropdown.Content align="right">
+                                <Dropdown.Content align="right" width="56">
                                     <div className="p-2 flex flex-col space-y-1">
                                         <Link className={`${chapter == 'Bab 1' ? 'bg-green-700 text-white hover:bg-green-800' : 'hover:bg-slate-100'}  p-1 px-1.5 text-sm rounded-md`} href={`/document/${documentData.id}/bab1`} >Bab 1</Link>
                                         <Link className={`${chapter == 'Bab 2' ? 'bg-green-700 text-white hover:bg-green-800' : 'hover:bg-slate-100'}  p-1 px-1.5 text-sm rounded-md`} href={`/document/${documentData.id}/bab2`}>Bab 2</Link>

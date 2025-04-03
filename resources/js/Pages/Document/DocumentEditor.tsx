@@ -22,7 +22,12 @@ import { Image } from "@/Tiptap/Extenstions/Image"
 import { SaveOnLoad } from "@/Utilities/Save"
 import { CellMenu, DefaultMenu, ImageMenu } from "@/Components/Menu"
 import { DeleteContent } from "@/Components/DeleteContent"
-import Dropcursor from "@tiptap/extension-dropcursor"
+import Modal from "@/Components/Modal"
+import PrimaryButton from "@/Components/PrimaryButton"
+import DangerButton from "@/Components/DangerButton"
+import { Pagination } from "@/Tiptap/Extenstions/Pagination"
+import { CiteLocalStorage, CiteManager } from "bibtex.js"
+// import {} from "prosemirror-pagination"
 
 
 
@@ -44,11 +49,19 @@ const DocumentEditor: React.FC = () => {
         Image,
         Caption,
         FloatingMenu,
-        Dropcursor,
         columnResizing as any,
+        Pagination.configure({
+            pageHeight: 29.7,
+        })
+
 
     ]
-
+    CiteManager.init(new CiteLocalStorage(`@book{butti2023high,
+  title={High Performance with Laravel Octane: Learn to fine-tune and optimize PHP and Laravel apps using Octane and an asynchronous approach},
+  author={Butti, Roberto},
+  year={2023},
+  publisher={Packt Publishing Ltd}
+}`));
 
     const content = props.content.contents
 
@@ -56,6 +69,9 @@ const DocumentEditor: React.FC = () => {
         type: "doc",
         content: content
     }
+
+
+    const [confirmUnsave, setConfirmUnsave] = useState<boolean>(false);
     const [sidebar, setSidebar] = useState<SideBarProps>({
         el: "table",
 
@@ -76,6 +92,9 @@ const DocumentEditor: React.FC = () => {
 
         },
         onCreate: async ({ editor }) => {
+            if (localStorage.getItem('document-cache')) {
+                setConfirmUnsave(true)
+            }
 
             const response = await SaveOnLoad(props)
             if (response && response.ok) {
@@ -90,7 +109,8 @@ const DocumentEditor: React.FC = () => {
             } catch (error) {
                 console.error("Update Error:", error);
             }
-        }
+        },
+
 
     })
 
@@ -120,6 +140,27 @@ const DocumentEditor: React.FC = () => {
 
                     </style>
                 </Head>}
+                <Modal show={confirmUnsave} maxWidth="xl">
+
+                    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <div className="flex justify-between p-4">
+                            <p className="font-semibold text-xl">Found Unsaved Document {props.content.name} </p>
+                            <button
+                                onClick={() => setConfirmUnsave(false)}
+                                className="text-gray-500 cursor-pointer hover:text-gray-700 transition"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <div className="p-5">
+                            <p>We found unsaved document for {props.content.name} do you wanna save it?</p>
+                        </div>
+                        <div className="flex justify-end p-5 space-x-4">
+                            <PrimaryButton>Save</PrimaryButton>
+                            <DangerButton onClick={() => setConfirmUnsave(false)}>Discard</DangerButton>
+                        </div>
+                    </div>
+                </Modal>
                 <Toolbar editor={editor} mytest={handleprint} documentData={props.document} chapter={props.chapter} />
                 <Sidebar />
                 <div className="flex justify-center h-full  w-full space-x-2  pt-36" id="container" >

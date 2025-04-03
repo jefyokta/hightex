@@ -1,16 +1,21 @@
 import { DocumentProps } from "@/types";
 
 import toast from "react-hot-toast";
-import { Editor } from "@tiptap/react";
+import { Editor, JSONContent } from "@tiptap/react";
 
 export const Save = async (props:DocumentProps,editor?:Editor|null):Promise<any>=> {
     const contents = props.content.contents
     if (!editor) throw new Error(`Editor has not been initialized`);;
-    editor.commands.blur();
-        const cachedData = localStorage.getItem('document-cache')
+        editor.commands.blur();
         const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '';
+
+        const cachedData = localStorage.getItem('document-cache')
         const docjson = editor.getJSON()
-        const editorData = JSON.stringify({ data: docjson });
+
+        const datas:Record<string,JSONContent> = {}
+        datas[props.content.name] = docjson
+        
+        const editorData = JSON.stringify({data:docjson});
         const  content = docjson.content?.filter(c => {
                 return !(c.type == 'heading' && c.attrs?.level == 1)
             })
@@ -48,7 +53,6 @@ export const Save = async (props:DocumentProps,editor?:Editor|null):Promise<any>
         } catch (error) {
             console.error("Save error:", error);
             localStorage.setItem("document-cache", data);
-            // toast.error("Failed to save document. Check your internet connection.");
             return false
         }
 };
@@ -60,7 +64,6 @@ export const SaveOnLoad = async (props:DocumentProps):Promise<Response | false>=
         const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '';
 
         async function example(){
-        //  return  setTimeout(async () => {
                 return await fetch(`/document/${props.content.name}`, {
                     method: "POST",
                     headers: {
@@ -69,7 +72,6 @@ export const SaveOnLoad = async (props:DocumentProps):Promise<Response | false>=
                     },
                     body: cachedData
                 })
-            // }, 1000);
         }
         const response =  toast.promise(example,{
             loading:"Saving Your stored document..",

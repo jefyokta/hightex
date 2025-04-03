@@ -14,6 +14,9 @@ declare module '@tiptap/core' {
   }
 }
 
+const  getJustifyContent =(align:"center"|"left")=> {
+    return align === 'center' ? 'center' :  'flex-start';
+  }
 const TableCommands = {
     setCellAlignment:
     (alignment: "left" | "center" | "right") =>
@@ -42,73 +45,72 @@ const TableCommands = {
   };
 
 
-const CustomTableCell = TableCell.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      align: {
-        default: 'left',
-        parseHTML: element => element.style.textAlign || 'left',
-        renderHTML: attributes => ({
-          style: `text-align: ${attributes.align}; display: flex; justify-content: ${
-            attributes.align === 'center' ? 'center' : attributes.align === 'right' ? 'flex-end' : 'flex-start'
-          };`
-        }),
-      },
-    };
-  },
-  addNodeView() {
-    return ({ node }) => {
+  const CustomTableCell = TableCell.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        align: {
+          default: 'left',
+          parseHTML: element => element.style.textAlign || 'left',
+          renderHTML: attributes => ({
+            style: `justify-content: center; display: flex; align-items: ${getJustifyContent(attributes.align)};`
+          }),
+        },
+      };
+    },
+    addNodeView() {
+      return ({ node }) => {
         const td = document.createElement('td');
         const wrapper = document.createElement('div');
-        td.setAttribute('align', 'center');
+
+        td.setAttribute('align', node.attrs.align);
         wrapper.style.display = 'flex';
-        wrapper.style.flexDirection = "column"
-        wrapper.style.alignItems = "center";
+        wrapper.style.flexDirection = "column";
+        wrapper.style.alignItems = getJustifyContent(node.attrs.align);
         wrapper.style.justifyContent = "center";
+
         td.appendChild(wrapper);
+
         return {
           dom: td,
           contentDOM: wrapper,
           update(updatedNode) {
             if (updatedNode.type !== node.type) return false;
-            node = updatedNode;
-            td.setAttribute('align', 'center');
-            td.setAttribute('colspan',node.attrs.colspan)
-            td.setAttribute('rowspan',node.attrs.rowspan)
-            wrapper.style.justifyContent = "center";
+
+            td.setAttribute('align', updatedNode.attrs.align);
+            td.setAttribute('colspan', updatedNode.attrs.colspan);
+            td.setAttribute('rowspan', updatedNode.attrs.rowspan);
+            wrapper.style.alignItems = getJustifyContent(updatedNode.attrs.align);
+
             return true;
           },
         };
       };
-  },
-  addCommands(): Partial<any> {
-    return {
-      setCellAlignmentLeft: () =>
-        TableCommands.setCellAlignment("left"),
-      setCellAlignmentRight: () =>
-        TableCommands.setCellAlignment("right"),
-      setCellAlignmentCenter: () =>
-        TableCommands.setCellAlignment("center")
-    };
-  },
-});
+    },
+    addCommands() {
+      return {
+        setCellAlignmentLeft: () => TableCommands.setCellAlignment("left"),
+        setCellAlignmentRight: () => TableCommands.setCellAlignment("right"),
+        setCellAlignmentCenter: () => TableCommands.setCellAlignment("center"),
+      };
+    },
+
+  });
+
 
 const CustomTableHeader = TableHeader.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      align: {
-        default: 'left',
-        parseHTML: element => element.style.textAlign || 'left',
-        renderHTML: attributes => ({
-          style: `text-align: ${attributes.align}; display: flex; justify-content: ${
-            attributes.align === 'center' ? 'center' : attributes.align === 'right' ? 'flex-end' : 'flex-start'
-          };`
-        }),
+    addAttributes() {
+        return {
+          ...this.parent?.(),
+          align: {
+            default: 'left',
+            parseHTML: element => element.style.textAlign || 'left',
+            renderHTML: attributes => ({
+              style: `justify-content: center; display: flex; align-items: ${getJustifyContent(attributes.align)};`
+            }),
+          },
+        };
       },
-    };
-  },
   addCommands(): Partial<any> {
     return {
       setCellAlignmentLeft: () =>
@@ -121,51 +123,33 @@ const CustomTableHeader = TableHeader.extend({
   },
   addNodeView() {
     return ({ node }) => {
-      const th = document.createElement("th");
-      const wrapper = document.createElement("div");
+      const td = document.createElement('th');
+      const wrapper = document.createElement('div');
 
-      th.setAttribute('align', node.attrs.align);
-      wrapper.style.display = "flex";
-      wrapper.style.flexDirection = "column"
+      td.setAttribute('align', node.attrs.align);
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = "column";
+      wrapper.style.alignItems = getJustifyContent(node.attrs.align);
+      wrapper.style.justifyContent = "center";
 
-      wrapper.style.width = "100%";
-      wrapper.style.height ="100%"
-      wrapper.style.alignItems = "center";
-
-      if (node.attrs.align === "left") {
-        wrapper.style.justifyContent = "flex-start";
-      } else if (node.attrs.align === "center") {
-        wrapper.style.justifyContent = "center";
-      } else if (node.attrs.align === "right") {
-        wrapper.style.justifyContent = "flex-end";
-      }
-
-      th.appendChild(wrapper);
+      td.appendChild(wrapper);
 
       return {
-        dom: th,
+        dom: td,
         contentDOM: wrapper,
         update(updatedNode) {
           if (updatedNode.type !== node.type) return false;
 
-          node = updatedNode;
-          th.setAttribute('align', node.attrs.align);
-          th.setAttribute('colspan',node.attrs.colspan)
-          th.setAttribute('rowspan',node.attrs.rowspan)
-
-
-          wrapper.style.justifyContent =
-            node.attrs.align === "center"
-              ? "center"
-              : node.attrs.align === "right"
-              ? "flex-end"
-              : "flex-start";
+          td.setAttribute('align', updatedNode.attrs.align);
+          td.setAttribute('colspan', updatedNode.attrs.colspan);
+          td.setAttribute('rowspan', updatedNode.attrs.rowspan);
+          wrapper.style.alignItems = getJustifyContent(updatedNode.attrs.align);
 
           return true;
         },
       };
     };
-  }
+  },
 
 });
 

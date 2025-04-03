@@ -44,12 +44,6 @@ const TableSetting: React.FC = () => {
                                 editor?.chain().focus().setCellAlignmentCenter().run()
                             }} className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-red-700 rounded-md text-white" >Center</button>
                     </div>
-                    <div className="flex justify-center px-0.5 py-0.5">
-
-                        <button
-                            onClick={() => editor?.chain().focus().setCellAlignmentRight().run()}
-                            className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-blue-800 rounded-md text-white" >Right</button>
-                    </div>
 
                 </div>
             </div>

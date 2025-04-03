@@ -2,9 +2,10 @@ import { useContext } from "react";
 import ImageList from "./ImageList";
 import TableSetting from "./TableSettings";
 import { MainContext } from "@/Context/MainContext";
+import { CitationSettings } from "./CitationSettings";
 
 export type SideBarProps = {
-    el?: "images" | "table";
+    el?: "images" | "table" | "citation" | "math";
     props?: Record<any, any>;
 };
 
@@ -14,6 +15,7 @@ export default function Sidebar() {
     const child: Record<string, React.ComponentType<any>> = {
         table: TableSetting,
         images: ImageList,
+        citation: CitationSettings
     };
 
     const Component = ctx?.sidebar.el ? child[ctx.sidebar.el] : null;
@@ -27,14 +29,11 @@ export default function Sidebar() {
             ${ctx?.sidebar.el ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}`}
             >
                 <div style={{ scrollbarWidth: "none", msOverflowStyle: 'none' }} className="border-b rounded-lg  p-2 text-sm border-slate-100 flex overflow-x-scroll  space-x-1" >
-                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer" onClick={()=>ctx?.setSidebar({el:'table'})}>Table</button>
-                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer" onClick={()=>ctx?.setSidebar({el:'images'})}>Image</button>
-                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
-                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
-                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
-                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
-                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
-                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Others</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer" onClick={() => ctx?.setSidebar({ el: 'table' })}>Table</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer" onClick={() => ctx?.setSidebar({ el: 'images' })}>Image</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer" onClick={() => ctx?.setSidebar({ el: "citation" })}>Citation</button>
+                    <button className="p-1 rounded-md px-2 bg-slate-100 cursor-pointer">Math</button>
+
                 </div>
                 {Component && <Component {...ctx?.sidebar.props} />}
             </div>
