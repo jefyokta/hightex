@@ -27,10 +27,9 @@ import PrimaryButton from "@/Components/PrimaryButton"
 import DangerButton from "@/Components/DangerButton"
 import { CiteLocalStorage, CiteManager } from "bibtex.js"
 import { Pagination } from "@/Tiptap/Extenstions/Pagination-ext"
-import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "@/Tiptap/Pagination-extension"
+import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "@/Tiptap/Pagination"
 import { Stack } from "@mui/material"
-// import Stack
-// import {} from "prosemirror-pagination"
+
 
 
 
