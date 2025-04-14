@@ -14,7 +14,7 @@ export const Save = async (props:DocumentProps,editor?:Editor|null):Promise<any>
 
         const datas:Record<string,JSONContent> = {}
         datas[props.content.name] = docjson
-        
+
         const editorData = JSON.stringify({data:docjson});
         const  content = docjson.content?.filter(c => {
                 return !(c.type == 'heading' && c.attrs?.level == 1)
@@ -93,3 +93,4 @@ export const SaveOnLoad = async (props:DocumentProps):Promise<Response | false>=
 
 
 }
+

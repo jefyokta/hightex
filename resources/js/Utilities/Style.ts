@@ -119,7 +119,11 @@ export const style =
             margin-bottom: 0.5em;
             text-align: justify;
           }
-      
+            .body{
+            padding:0!important;
+            border:0 !important;
+            }
+
 
           .ProseMirror p {
             max-width: 140mm;
@@ -128,9 +132,15 @@ export const style =
             hyphenate-limit-chars: 3 3 3;
             overflow-wrap: break-word;
           }
-
-
-
+            .ProseMirror {
+            outline: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            }
+            .ProseMirror:focus {
+            outline: none;
+            box-shadow: none;
+            }
           .tiptap {
             margin: 0;
             padding: 0;

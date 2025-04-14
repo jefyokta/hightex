@@ -26,8 +26,8 @@ import Modal from "@/Components/Modal"
 import PrimaryButton from "@/Components/PrimaryButton"
 import DangerButton from "@/Components/DangerButton"
 import { CiteLocalStorage, CiteManager } from "bibtex.js"
-import { Pagination } from "@/Tiptap/Extenstions/Pagination"
-import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "tiptap-extension-pagination"
+import { Pagination } from "@/Tiptap/Extenstions/Pagination-ext"
+import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "@/Tiptap/Pagination"
 import { Stack } from "@mui/material"
 // import Stack
 // import {} from "prosemirror-pagination"
@@ -54,15 +54,17 @@ const DocumentEditor: React.FC = () => {
         FloatingMenu,
         columnResizing as any,
         PaginationExtension.configure({
-            // defaultMarginConfig: {
-            //     top: 40,
-            //     left: 40,
-            //     right: 30,
-            //     bottom: 60
-            // },
-            defaultPaperSize: "A4"
+            defaultMarginConfig: {
+                top: 40,
+                left: 40,
+                right: 30,
+                bottom: 60
+            },
+            // defaultPaperSize: "A4"
         }),
-        PageNode,
+        PageNode.configure({
+
+        }),
         BodyNode,
 
 
@@ -188,12 +190,12 @@ const DocumentEditor: React.FC = () => {
                 </Modal>
                 <Toolbar editor={editor} mytest={handleprint} documentData={props.document} chapter={props.chapter} />
                 <Sidebar />
-                <div className="flex justify-center h-full   w-full space-x-2  pt-36" id="container" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`}} >
+                <div className="flex justify-center h-full   w-full space-x-2  pt-36" id="container"  >
+                    <div className="focus:outline-none mt-24" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`, display: "flex", flexDirection: "column" }}>
                     <Stack direction="column" flexGrow={1} paddingX={2} overflow="auto">
                         <EditorContent editor={editor} />
                     </Stack >
-                    {/* <div className="focus:outline-none" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`, display: "flex", flexDirection: "column" }}>
-                    </div> */}
+                    </div>
 
                     {editor && (
                         <FloatingMenu
