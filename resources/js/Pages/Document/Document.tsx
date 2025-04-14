@@ -8,11 +8,7 @@ import DocumentList from "./DocumentList"
 
 
 const Document: React.FC = () => {
-
-
     const { props } = usePage<DocumentPageProps>()
-
-
     return (
         <Authenticated>
             <Head title="Document" />
