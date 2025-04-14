@@ -12,6 +12,13 @@
             margin: 3cm;
         }
 
+        *, ::after, ::before, ::backdrop, ::file-selector-button {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+        }
+
         #page {
             height: max-content;
         }
@@ -181,7 +188,7 @@
             list-style-type: decimal;
             margin-left: 2.5em;
         }
-        
+
 
         .page ul {
             list-style-type: disc;

@@ -9,6 +9,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Jefyokta\Json2Tex\Converter as Json2TexConverter;
+use Jefyokta\Json2Tex\Interface\Converter;
 use Spatie\Browsershot\Browsershot;
 
 class DocumentController extends Controller
@@ -159,9 +161,7 @@ class DocumentController extends Controller
                 }
             }
 
-            // dd($docs);
-            $result = (new Compiler)->compile($docs);
-            // dd($result);
+            $result = Json2TexConverter::setContent($docs)->getHtml();
 
             $pdfContent = Browsershot::html(view('pdf', ['html' => $result])->render())
                 ->setNodeBinary('/Users/jefyokta/Library/Application\\ Support/Herd/config/nvm/versions/node/v22.12.0/bin/node')

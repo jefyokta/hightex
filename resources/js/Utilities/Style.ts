@@ -112,31 +112,24 @@ export const style =
             content: "Gambar " counter(h1-counter) "." counter(fig-counter) " ";
           }
 
-          .page-break {
-            width: 21cm;
-            height: 6cm;
-            margin-left: -4cm;
-            position: relative;
-          }
 
-          .page .tiptap > p {
+         .body > div > p {
             text-indent: 1.27cm;
             margin-top: 0;
             margin-bottom: 0.5em;
             text-align: justify;
           }
+      
 
           .ProseMirror p {
-            max-width: 14cm;
+            max-width: 140mm;
             text-align: justify;
             hyphens: auto;
             hyphenate-limit-chars: 3 3 3;
             overflow-wrap: break-word;
           }
 
-          .page > .tiptap {
-            max-width: 14cm !important;
-          }
+
 
           .tiptap {
             margin: 0;
@@ -159,11 +152,7 @@ export const style =
           }
 
           .page {
-            width: 21cm;
-            min-height: 29.7cm;
             background: rgb(255, 255, 255);
-            padding: 3cm 3cm 4cm 4cm;
-            margin: 3cm auto;
             font-family: 'Times New Roman', Times, serif;
             line-height: 1.5;
             overflow-y: hidden;
@@ -171,21 +160,13 @@ export const style =
             page-break-after: always;
             font-size: 12pt;
             position: relative;
+
           }
 
           .tiptap {
             min-height: max-content;
           }
-        .page-break {
-            height: 20px;
-            width: 100%;
-            border-top: 1px dashed #ccc;
-            margin: 10px 0;
 
-        }
-          .tiptap:focus {
-            outline: none;
-          }
 
           .page cite {
             font-style: normal;

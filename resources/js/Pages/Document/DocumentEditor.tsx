@@ -1,4 +1,4 @@
-import { useEditor, EditorContent, FloatingMenu } from "@tiptap/react"
+import { useEditor, EditorContent, FloatingMenu, Node, JSONContent } from "@tiptap/react"
 import Sidebar, { SideBarProps } from "@/Components/Sidebar"
 import Toolbar from "@/Components/Toolbar"
 import { MainContext } from "@/Context/MainContext"
@@ -25,8 +25,11 @@ import { DeleteContent } from "@/Components/DeleteContent"
 import Modal from "@/Components/Modal"
 import PrimaryButton from "@/Components/PrimaryButton"
 import DangerButton from "@/Components/DangerButton"
-import { Pagination } from "@/Tiptap/Extenstions/Pagination"
 import { CiteLocalStorage, CiteManager } from "bibtex.js"
+import { Pagination } from "@/Tiptap/Extenstions/Pagination"
+import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "tiptap-extension-pagination"
+import { Stack } from "@mui/material"
+// import Stack
 // import {} from "prosemirror-pagination"
 
 
@@ -34,8 +37,8 @@ import { CiteLocalStorage, CiteManager } from "bibtex.js"
 const DocumentEditor: React.FC = () => {
     const { props } = usePage<DocumentProps>()
     const extensions = [
-        StarterKit.configure({ heading: false }),
-        CustomHeading(props.content.main.text),
+        StarterKit,
+        // CustomHeading(props.content.main.text),
         Underline,
         Table.configure({ resizable: true }),
         TableCell,
@@ -50,9 +53,19 @@ const DocumentEditor: React.FC = () => {
         Caption,
         FloatingMenu,
         columnResizing as any,
-        Pagination.configure({
-            pageHeight: 29.7,
-        })
+        PaginationExtension.configure({
+            // defaultMarginConfig: {
+            //     top: 40,
+            //     left: 40,
+            //     right: 30,
+            //     bottom: 60
+            // },
+            defaultPaperSize: "A4"
+        }),
+        PageNode,
+        BodyNode,
+
+
 
 
     ]
@@ -65,9 +78,17 @@ const DocumentEditor: React.FC = () => {
 
     const content = props.content.contents
 
+    const [contents, setContent] = useState<JSONContent | string>([
+        // {
+        //     type: "heading",
+        //     attrs: { level: 1 },
+        //     content: [{ type: "text", text: props.content.main.text }]
+        // },
+        ...content])
+
     const schema = {
         type: "doc",
-        content: content
+        content: contents
     }
 
 
@@ -86,7 +107,7 @@ const DocumentEditor: React.FC = () => {
     const editor = useEditor({
         editable: true,
         extensions,
-        content: content ? schema : "",
+        content: content ? schema as any : "",
         onSelectionUpdate({ editor }) {
 
 
@@ -106,6 +127,7 @@ const DocumentEditor: React.FC = () => {
         onUpdate({ editor }) {
             try {
                 editor.view.updateState(editor.state);
+                setContent(editor.getHTML())
             } catch (error) {
                 console.error("Update Error:", error);
             }
@@ -135,6 +157,9 @@ const DocumentEditor: React.FC = () => {
                             cursor: col-resize;
                             background-color: rgba(0, 100, 250, 0.2);
                         }
+                        .page table tr {
+                        border:1px solid  rgba(0, 100, 250, 0.2);;
+                        }
                         `
                     }
 
@@ -163,10 +188,12 @@ const DocumentEditor: React.FC = () => {
                 </Modal>
                 <Toolbar editor={editor} mytest={handleprint} documentData={props.document} chapter={props.chapter} />
                 <Sidebar />
-                <div className="flex justify-center h-full  w-full space-x-2  pt-36" id="container" >
-                    <div id="page" className="page  border-slate-200 shadow-lg border " style={{ counterReset: `h1-counter ${props.content.main.number - 1}` }}>
+                <div className="flex justify-center h-full   w-full space-x-2  pt-36" id="container" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`}} >
+                    <Stack direction="column" flexGrow={1} paddingX={2} overflow="auto">
                         <EditorContent editor={editor} />
-                    </div>
+                    </Stack >
+                    {/* <div className="focus:outline-none" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`, display: "flex", flexDirection: "column" }}>
+                    </div> */}
 
                     {editor && (
                         <FloatingMenu

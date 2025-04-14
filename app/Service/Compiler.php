@@ -6,6 +6,7 @@ use Jefyokta\Json2Tex\Converter;
 
 class Compiler
 {
+
     /**
      * @param \Jefyokta\Json2Tex\Types\Node[] $nodes
      */
