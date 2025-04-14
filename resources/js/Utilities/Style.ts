@@ -119,7 +119,7 @@ export const style =
             margin-bottom: 0.5em;
             text-align: justify;
           }
-      
+
 
           .ProseMirror p {
             max-width: 140mm;
@@ -145,6 +145,20 @@ export const style =
             list-style-type: decimal;
             margin-left: 2.5em;
           }
+            .body {
+            border:0 !important
+            }
+            .ProseMirror {
+            outline: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            }
+            .ProseMirror:focus {
+            outline: none;
+            box-shadow: none;
+            }
+
+
 
           .page ul {
             list-style-type: disc;

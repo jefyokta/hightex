@@ -26,8 +26,8 @@ import Modal from "@/Components/Modal"
 import PrimaryButton from "@/Components/PrimaryButton"
 import DangerButton from "@/Components/DangerButton"
 import { CiteLocalStorage, CiteManager } from "bibtex.js"
-import { Pagination } from "@/Tiptap/Extenstions/Pagination"
-import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "tiptap-extension-pagination"
+import { Pagination } from "@/Tiptap/Extenstions/Pagination-ext"
+import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "@/Tiptap/Extenstions/Pagination"
 import { Stack } from "@mui/material"
 // import Stack
 // import {} from "prosemirror-pagination"
@@ -188,7 +188,7 @@ const DocumentEditor: React.FC = () => {
                 </Modal>
                 <Toolbar editor={editor} mytest={handleprint} documentData={props.document} chapter={props.chapter} />
                 <Sidebar />
-                <div className="flex justify-center h-full   w-full space-x-2  pt-36" id="container" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`}} >
+                <div className="flex justify-center h-full   w-full space-x-2  pt-36" id="container" style={{ counterReset: `h1-counter ${props.content.main.number - 1}` }} >
                     <Stack direction="column" flexGrow={1} paddingX={2} overflow="auto">
                         <EditorContent editor={editor} />
                     </Stack >
