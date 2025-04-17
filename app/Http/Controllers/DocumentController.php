@@ -161,12 +161,13 @@ class DocumentController extends Controller
                 }
             }
 
-            $result = Json2TexConverter::setContent($docs)->getHtml();
+            // $result = Json2TexConverter::setContent($docs)->getHtml();
+            $result = (new Compiler)->compile($docs);
 
             $pdfContent = Browsershot::html(view('pdf', ['html' => $result])->render())
                 ->setNodeBinary('/Users/jefyokta/Library/Application\\ Support/Herd/config/nvm/versions/node/v22.12.0/bin/node')
                 ->setNpmBinary('/Users/jefyokta/Library/Application\\ Support/Herd/config/nvm/versions/node/v22.12.0/bin/npm')
-                ->margins(3, 3, 4, 4,'cm')
+                ->margins(3, 3, 4, 4, 'cm')
                 ->format('A4')
                 ->pdf();
 

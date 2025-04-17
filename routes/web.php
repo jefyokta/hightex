@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Foundation\Application;
@@ -51,6 +52,9 @@ Route::get('/test', function () {
     ]]);
 });
 Route::middleware('auth')->group(function () {
+    Route::post('/image',[ImageController::class,'store']);
+    Route::get("/images",[ImageController::class,'index']);
+
     Route::get('/test',[DocumentController::class,'compile']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "14e0d4c6836661a16fbafd3453abdc81",
+    "content-hash": "7739ce08c20f45fe4848a355cea4658c",
     "packages": [
         {
             "name": "brick/math",
@@ -1124,16 +1124,16 @@
         },
         {
             "name": "jefyokta/json2tex",
-            "version": "v0.0.2",
+            "version": "v0.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jefyokta/Json2Tex.git",
-                "reference": "61bdfbe98e214796a4801b28e2fa9df735b63102"
+                "reference": "4a435a56888cfcaf0eecdcb8c674ea7bba5210a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jefyokta/Json2Tex/zipball/61bdfbe98e214796a4801b28e2fa9df735b63102",
-                "reference": "61bdfbe98e214796a4801b28e2fa9df735b63102",
+                "url": "https://api.github.com/repos/jefyokta/Json2Tex/zipball/4a435a56888cfcaf0eecdcb8c674ea7bba5210a6",
+                "reference": "4a435a56888cfcaf0eecdcb8c674ea7bba5210a6",
                 "shasum": ""
             },
             "require": {
@@ -1168,9 +1168,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jefyokta/Json2Tex/issues",
-                "source": "https://github.com/jefyokta/Json2Tex/tree/v0.0.2"
+                "source": "https://github.com/jefyokta/Json2Tex/tree/v0.0.4"
             },
-            "time": "2025-04-11T02:15:20+00:00"
+            "time": "2025-04-14T23:51:54+00:00"
         },
         {
             "name": "laravel/framework",
@@ -7908,16 +7908,16 @@
         },
         {
             "name": "phpdocumentor/reflection-docblock",
-            "version": "5.6.1",
+            "version": "5.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "e5e784149a09bd69d9a5e3b01c5cbd2e2bd653d8"
+                "reference": "92dde6a5919e34835c506ac8c523ef095a95ed62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/e5e784149a09bd69d9a5e3b01c5cbd2e2bd653d8",
-                "reference": "e5e784149a09bd69d9a5e3b01c5cbd2e2bd653d8",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/92dde6a5919e34835c506ac8c523ef095a95ed62",
+                "reference": "92dde6a5919e34835c506ac8c523ef095a95ed62",
                 "shasum": ""
             },
             "require": {
@@ -7966,9 +7966,9 @@
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
             "support": {
                 "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
-                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.6.1"
+                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.6.2"
             },
-            "time": "2024-12-07T09:39:29+00:00"
+            "time": "2025-04-13T19:20:35+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",

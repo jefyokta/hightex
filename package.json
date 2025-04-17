@@ -51,6 +51,7 @@
     "@tiptap/starter-kit": "^2.11.5",
     "@tiptap/suggestion": "^2.11.5",
     "bibtex.js": "^0.0.14-beta",
+    "dexie": "^4.0.11",
     "katex": "^0.16.21",
     "prosemirror-pagination": "^0.1.5",
     "prosemirror-tables": "^1.6.4",

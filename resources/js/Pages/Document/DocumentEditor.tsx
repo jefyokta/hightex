@@ -189,7 +189,7 @@ const DocumentEditor: React.FC = () => {
                 </Modal>
                 <Toolbar editor={editor} mytest={handleprint} documentData={props.document} chapter={props.chapter} />
                 <Sidebar />
-                <div className="flex justify-center h-full   w-full space-x-2  pt-36" id="container"  >
+                <div className="flex justify-center h-full  pb-10  w-full space-x-2  pt-36" id="container"  >
                     <div className="focus:outline-none mt-24" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`, display: "flex", flexDirection: "column" }}>
                     <Stack direction="column" flexGrow={1} paddingX={2} overflow="auto">
                         <EditorContent editor={editor} />

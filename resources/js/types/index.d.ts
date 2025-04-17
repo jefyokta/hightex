@@ -35,6 +35,17 @@ export interface DocumentProps extends PageProps {
     document: DocumentData
 }
 
+export type Image = {
+    name:string,
+    size:number,
+
+}
+
+export interface ImagesProps extends PageProps{
+    images:Image[],
+    storageLeft:number,
+}
+
 
 
 interface DocumentPageProps extends PageProps {

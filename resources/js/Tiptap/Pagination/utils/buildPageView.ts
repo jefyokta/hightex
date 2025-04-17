@@ -222,13 +222,8 @@ const buildNewDocument = (
         pages.push(pageNode);
         return pageNode;
     };
-    function pxToCm(px:number) {
-        const dpi = 96;
-        const inchesPerCm = 2.54;
-        return (px * inchesPerCm) / dpi;
-      }
 
-      function cmToPx(cm:number) {
+     const cmToPx = (cm:number) =>{
         const dpi = 96 ;
         return cm * (dpi / 2.54);
       }
@@ -244,7 +239,7 @@ const buildNewDocument = (
         bodyOffset = 1;
     let cumulativeNewDocPos = pageOffset + getMaybeNodeSize(currentPageHeader) + bodyOffset;
 
-    console.log("height",bodyPixelDimensions.bodyHeight);
+    // console.log("height",bodyPixelDimensions.bodyHeight);
 
     for (let i = 0; i < contentNodes.length; i++) {
         const { node, pos: oldPos } = contentNodes[i];

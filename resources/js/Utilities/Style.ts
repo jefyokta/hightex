@@ -124,6 +124,12 @@ export const style =
             border:0 !important;
             }
 
+            .page table {
+
+
+            font-size:10pt;
+            }
+
 
           .ProseMirror p {
             max-width: 140mm;
