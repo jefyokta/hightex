@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -39,6 +40,25 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
+Route::get('/stream', function () {
+    return \response()->stream(function () {
+
+        echo str_repeat('T', random_int(1, 1000));
+        flush();
+        sleep(2);
+        echo str_repeat('E', random_int(1, 1000));
+        flush();
+        sleep(2);
+        echo str_repeat('S', random_int(1, 1000));
+        flush();
+        sleep(2);
+        echo str_repeat('T', random_int(1, 1000));
+        flush();
+
+        sleep(2);
+        echo 'done';
+    });
+});
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', [
@@ -52,10 +72,13 @@ Route::get('/test', function () {
     ]]);
 });
 Route::middleware('auth')->group(function () {
-    Route::post('/image',[ImageController::class,'store']);
-    Route::get("/images",[ImageController::class,'index']);
+    Route::post('/image', [ImageController::class, 'store'])->name('image.store');
+    Route::get('/image', [ImageController::class, "images"])->name("image");
+    Route::get('/image/{image}', [ImageController::class, "show"])->name("image.show");
 
-    Route::get('/test',[DocumentController::class,'compile']);
+    Route::get("/images", [ImageController::class, 'index'])->name('image.index');
+
+    Route::get('/test', [DocumentController::class, 'compile']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

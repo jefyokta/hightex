@@ -101,6 +101,14 @@ export const FigureTable = Figure.extend({
 
     name:"figureTable",
     content :"figcaption table",
+    addAttributes(){
+
+        return {
+            ...this.parent?.(),
+            groupId:{
+            default:""
+        }}
+    },
     addCommands():any{
         return {
             addFigureTable:()=>

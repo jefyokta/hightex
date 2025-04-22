@@ -28,6 +28,8 @@ import { isHeaderFooterNode } from "./nodes/headerFooter/headerFooter";
 import { isBodyNode } from "./nodes/body/body";
 import { Editor } from "@tiptap/core";
 import { mm, px } from "./units";
+import { TableHandler } from "./tableMeasure";
+import { calculatePageContentPixelDimensions } from "./nodes/page/attributes/paperSize";
 
 /**
  * Builds a new document with paginated content.
@@ -42,7 +44,39 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
 
     try {
         const contentNodes = collectContentNodes(doc);
-        const nodeHeights = measureNodeHeights(view, contentNodes);
+        // const contentNodes = collectAllNodes(doc)
+
+        const tableHandler = new TableHandler();
+        const mergedContentNodes = contentNodes.reduce((acc, { node, pos }) => {
+            if (node.type.name === 'table' && node.attrs.groupId) {
+              if (!acc.find((n) => n.node.attrs.groupId === node.attrs.groupId)) {
+                const group = tableHandler.getTableGroup(node)
+                if (group) {
+                  const mergedTable = tableHandler.mergeTableGroup(
+                    node.attrs.groupId,
+                    contentNodes,
+                  )
+                  if (mergedTable) {
+                    acc.push({ node: mergedTable, pos })
+                  }
+                }
+              }
+            } else {
+              acc.push({ node, pos })
+            }
+            return acc
+          }, [] as NodePosArray)
+          contentNodes.map(n=>{
+            console.log(n.node.type.name)
+        })
+
+    mergedContentNodes.map(n=>{
+        console.log(n.node.type.name)
+    })
+
+
+
+        const nodeHeights = measureNodeHeights(view,contentNodes);
 
         // Record the cursor's old position
         const { tr, selection } = state;
@@ -66,6 +100,19 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
     }
 };
 
+
+const collectAllNodes = (doc: PMNode): NodePosArray =>{
+    const contentNodes: NodePosArray = [];
+    let pos = 0;
+    doc.descendants((node, offset) => {
+      if (!node.isText && node.type.name !== 'doc') {
+        contentNodes.push({ node, pos: offset });
+      }
+    });
+    return contentNodes;
+  }
+
+
 /**
  * Collect content nodes and their existing positions.
  *
@@ -77,6 +124,8 @@ const collectContentNodes = (doc: PMNode): NodePosArray => {
     doc.forEach((pageNode, pageOffset) => {
         if (isPageNode(pageNode)) {
             pageNode.forEach((pageRegionNode, pageRegionOffset) => {
+                console.log(pageRegionNode);
+
                 // Offsets in forEach loop start from 0, however, the child nodes of any given node
                 // have a starting offset of 1 (for the first child)
                 const truePageRegionOffset = pageRegionOffset + 1;
@@ -133,7 +182,6 @@ const measureNodeHeights = (view: EditorView, contentNodes: NodePosArray): numbe
         const domNode = view.nodeDOM(pos);
         if (domNode instanceof HTMLElement) {
             let { height } = domNode.getBoundingClientRect();
-
             const { top: marginTop } = calculateElementMargins(domNode);
 
             if (height === 0) {
@@ -248,8 +296,23 @@ const buildNewDocument = (
         // const isPageFull = currentHeight + nodeHeight > bodyPixelDimensions.bodyHeight;
 
         const isPageFull = currentHeight + nodeHeight > cmToPx(21.5);
+        const isTable = node.type.name == "figureTable";
 
         if (isPageFull && currentPageContent.length > 0) {
+
+            if (isTable) {
+
+            const  measurement =  TableHandler.getInstance().measureTable(node,editor.view)
+            const availableHeight = bodyPixelDimensions.bodyHeight - currentHeight
+            console.log("available height %d",availableHeight)
+            console.log("mesasurement height %d",measurement.totalHeight)
+
+            if (measurement.totalHeight > availableHeight) {
+                const table =  TableHandler.getInstance().splitTableAtHeight(node,availableHeight, measurement,schema,bodyPixelDimensions.bodyHeight)
+            console.log(table);
+            }
+
+            }
             const pageNode = addPage(currentPageContent);
             cumulativeNewDocPos += pageNode.nodeSize - getMaybeNodeSize(currentPageHeader);
             currentPageContent = [];
@@ -261,7 +324,7 @@ const buildNewDocument = (
 
             // Next page header
             currentPageHeader = constructHeader(pageRegionNodeAttributes.header);
-            cumulativeNewDocPos += getMaybeNodeSize(currentPageHeader);
+            cumulativeNewDocPos += getMaybeNodeSize(currentPageHeader)  ;
         }
 
         // Record the mapping from old position to new position
@@ -274,7 +337,6 @@ const buildNewDocument = (
     }
 
     if (currentPageContent.length > 0) {
-        // Add final page (may not be full)
         addPage(currentPageContent);
     } else {
         pageNum--;

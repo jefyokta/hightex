@@ -16,15 +16,45 @@ class ImageController extends Controller
 
     public function index()
     {
-        $images = Image::where("user_id", Auth::user()->id);
+        $images = Image::where("user_id", Auth::user()->id)->get();
 
-        return Inertia::render('Images/Images');
+        return Inertia::render('Images/Images', ["images" => $images]);
+    }
+
+
+    public function show(Image $image)
+    {
+        if ($image->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $path = "images/{$image->name}";
+
+        if (!Storage::disk('local')->exists($path)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        $content = Storage::disk('local')->get($path);
+
+        $mime = Storage::mimeType($path);
+        // $mime = $c->mimeType($path);
+
+        return response($content, 200)->header('Content-Type', $mime);
+    }
+
+
+    public function images()
+    {
+        $images = Image::where("user_id", Auth::user()->id)->get()->pluck('id');
+
+
+        return response()->json(["data" => $images]);
     }
     public function store(Request $request)
     {
         $user = Auth::user();
-        $request->validate(['required|image|mimes:jpg,jpeg,png|max:2048']);
-
+        // dd($request);
+        $request->validate(["image" => 'required|image|mimes:jpg,jpeg,png|max:2048']);
         $image = $request->file('image');
         $size = $image->getSize();
         $currentTotal = Image::where('user_id', $user->id)->sum('size');
@@ -34,7 +64,8 @@ class ImageController extends Controller
         }
 
         $filename = uniqid() . '.' . $image->getClientOriginalExtension();
-        Storage::disk('local')->putFile("images/{$filename}", $image);
+
+        Storage::disk('local')->putFileAs("images", $image, $filename);
 
         Image::create([
             'name' => $filename,

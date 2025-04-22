@@ -141,6 +141,7 @@ const DocumentEditor: React.FC = () => {
 
 
 
+
     return (
         <EditorLayout>
             <MainContext.Provider value={{ sidebar, setSidebar, tableHelper, setTableHelper, editor }}>

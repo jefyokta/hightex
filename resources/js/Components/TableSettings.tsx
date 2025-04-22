@@ -1,92 +1,155 @@
 import { MainContext } from "@/Context/MainContext"
+import { Switch } from "@headlessui/react"
 import { Editor } from "@tiptap/react"
-import { addColumnAfter } from "prosemirror-tables"
-import { useContext, useState } from "react"
+import {
+    PlusCircleIcon,
+    Trash2Icon,
+    SplitIcon,
+    AlignLeftIcon,
+    AlignCenterIcon,
+    RowsIcon,
+    ColumnsIcon,
+    LucideTableCellsMerge,
+} from "lucide-react"
+import { useContext } from "react"
+
+const ActionButton = ({
+    onClick,
+    disabled,
+    label,
+    icon: Icon,
+    className = "",
+    labelClass = "",
+    iconClass = "",
+}: {
+    onClick: () => void
+    disabled?: boolean
+    label?: string
+    icon: React.ElementType
+    className?: string,
+    labelClass?: string,
+    iconClass?: string
+}) => (
+    <button
+        onClick={onClick}
+        disabled={disabled}
+        className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-md border border-gray-300 bg-white hover:bg-gray-50 transition disabled:opacity-40 ${className}`}
+    >
+        <Icon size={14} className={iconClass ? iconClass : `text-gray-700`} />
+        {label && <span className={labelClass ? labelClass : `text-gray-800`}>{label}</span>}
+    </button>
+)
 
 const TableSetting: React.FC = () => {
     const ctx = useContext(MainContext)
     const editor = ctx?.editor
 
     return (
-        <div className="p-5 w-full  space-y-3 ">
-            <h1 className="font-bold text-xl">Table Setting</h1>
-            <div className="space-y-1 w-full">
-                <h1 className="font-semibold">Column</h1>
-                <div className=" w-full flex   flex-wrap" >
-                    <div className="flex justify-center px-0.5 py-0.5">
-                        <button disabled={!editor?.can().addColumnAfter()} onClick={() => editor?.chain().focus().addColumnAfter().run()} className=" text-xs text-center px-2 py-0.5 bg-teal-700 rounded-md text-white disabled:opacity-50" >Add</button>
+        <div className="p-4  space-y-4 text-sm text-gray-700">
+            {/* Column Controls */}
+            <div className="space-y-2">
+                <h2 className="font-medium flex items-center gap-1 text-sm text-gray-800">
+                    <ColumnsIcon size={16} />
+                    Column
+                </h2>
+                <div className="space-y-2">
+                    <div className="flex gap-2">
+                        <ActionButton
+                            icon={PlusCircleIcon}
+                            onClick={() => editor?.chain().focus().addColumnAfter().run()}
+                            disabled={!editor?.can().addColumnAfter()}
+                        />
+                        <ActionButton
+                            icon={Trash2Icon}
+                            onClick={() => editor?.chain().focus().deleteColumn().run()}
+                            disabled={!editor?.can().deleteColumn()}
+                        />
                     </div>
-                    <div className="flex justify-center px-0.5 py-0.5">
-                        <button disabled={!editor?.can().deleteColumn()} onClick={() => editor?.chain().focus().deleteColumn().run()} className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-red-700 rounded-md text-white" >Delete</button>
-                    </div>
-                    <div className="flex justify-center px-0.5 py-0.5">
-
-                        <button disabled={!editor?.can().mergeCells()}
+                    <div className="flex gap-2">
+                        <ActionButton
+                            icon={LucideTableCellsMerge}
+                            label="Merge"
                             onClick={() => editor?.chain().focus().mergeCells().run()}
-                            className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-blue-800 rounded-md text-white" >Merge </button>
-                    </div>
-                    <div className="flex justify-center px-0.5 py-0.5">
-                        <button disabled={!editor?.can().splitCell()}
+                            disabled={!editor?.can().mergeCells()}
+                        />
+                        <ActionButton
+                            icon={SplitIcon}
+                            label="Split"
                             onClick={() => editor?.chain().focus().splitCell().run()}
-                            className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-slate-700 rounded-md text-white" >Split</button>
+                            disabled={!editor?.can().splitCell()}
+                        />
                     </div>
                 </div>
-                <p className="text-xs ms-2">Alignment</p>
-                <div className=" w-full flex   flex-wrap" >
-                    <div className="flex justify-center px-0.5 py-0.5">
-                        <button
-                            onClick={() => editor?.chain().focus().setCellAlignmentLeft().run()}
-                            className=" text-xs text-center px-2 py-0.5 bg-teal-700 rounded-md text-white disabled:opacity-50" >Left</button>
-                    </div>
-                    <div className="flex justify-center px-0.5 py-0.5">
-                        <button
-                            onClick={(e) => {
-                                editor?.chain().focus().setCellAlignmentCenter().run()
-                            }} className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-red-700 rounded-md text-white" >Center</button>
-                    </div>
+                <div className="flex gap-2 mt-1">
+                    <ActionButton
+                        icon={AlignLeftIcon}
+                        label="Left"
+                        onClick={() => editor?.chain().focus().setCellAlignmentLeft().run()}
+                        disabled={!editor?.can().setCellAlignmentLeft()}
 
-                </div>
-            </div>
-            <hr />
-            <div className="space-y-1">
-                <h1 className="font-semibold">Row</h1>
-                <div className="flex space-x-1">
-                    <div className="flex justify-center px-0.5 py-0.5">
+                    />
+                    <ActionButton
+                        icon={AlignCenterIcon}
+                        label="Center"
+                        onClick={() => editor?.chain().focus().setCellAlignmentCenter().run()}
 
-                        <button disabled={!editor?.can().addRowAfter()}
-                            onClick={() => {
-                                editor?.chain().focus().addRowAfter().run()
-                            }}
-                            className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-teal-800 rounded-md text-white" >Add </button>
-                    </div>
-                    <div className="flex justify-center px-0.5 py-0.5">
-
-                        <button
-                            onClick={() => editor?.chain().focus().deleteRow().run()}
-                            disabled={!editor?.can().deleteRow()} className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-red-800 rounded-md text-white">Delete</button>
-                    </div>
+                        disabled={!editor?.can().setCellAlignmentCenter()}
+                    />
                 </div>
             </div>
-            <hr />
-            <div>
-                <div className="flex justify-start items-center my-2 space-x-2">
-                    <input type="checkbox" checked={ctx?.tableHelper} onChange={() => ctx?.setTableHelper(!ctx.tableHelper)} className="rounded-full w-4 h-4 text-indigo-500 focus:ring-0 border-0 shadow-md border border-[0.5px]" />
+
+            {/* Row Controls */}
+            <div className="space-y-2">
+                <h2 className="font-medium flex items-center gap-1 text-sm text-gray-800">
+                    <RowsIcon size={16} />
+                    Row
+                </h2>
+                <div className="flex gap-2">
+                    <ActionButton
+                        icon={PlusCircleIcon}
+                        label="Add"
+                        onClick={() => editor?.chain().focus().addRowAfter().run()}
+                        disabled={!editor?.can().addRowAfter()}
+                    />
+                    <ActionButton
+                        icon={Trash2Icon}
+                        label="Delete"
+                        onClick={() => editor?.chain().focus().deleteRow().run()}
+                        disabled={!editor?.can().deleteRow()}
+                    />
+                </div>
+            </div>
+
+            {/* Helper & Delete */}
+            <div className="space-y-2 my-2">
+                <div className="flex items-center justify-between">
                     <span className="text-xs">Show edge helper</span>
+                    <Switch
+                        checked={ctx?.tableHelper}
+                        onChange={() => ctx?.setTableHelper(!ctx.tableHelper)}
+                        className={`${ctx?.tableHelper ? "bg-gray-800" : "bg-gray-300"
+                            } relative inline-flex h-5 w-10 items-center rounded-full transition-colors`}
+                    >
+                        <span
+                            className={`${ctx?.tableHelper ? "translate-x-5" : "translate-x-1"
+                                } inline-block h-3 w-3 transform rounded-full bg-white transition`}
+                        />
+                    </Switch>
                 </div>
-                <div className="flex px-0.5 py-0.5">
-                    <button
-                        onClick={() => {
-                            editor?.chain().focus().deleteNode("figureTable").run()
-                        }}
-                       className="disabled:opacity-50 text-xs text-center px-2 py-0.5 bg-red-800 rounded-md text-white">Delete Table</button>
+                <div className="my-5">
+                    <ActionButton
+                        icon={Trash2Icon}
+                        label="Delete Table"
+                        labelClass="text-red-500"
+                        iconClass="text-red-500"
+                        onClick={() => editor?.chain().focus().deleteNode("figureTable").run()}
+                        className="w-full justify-center bg-transparent"
+                        disabled={!editor?.can().deleteNode("figureTable")}
+                    />
                 </div>
             </div>
-
-
         </div>
     )
-
 }
-
 
 export default TableSetting

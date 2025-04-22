@@ -1,3 +1,11 @@
 @import "tailwindcss";
 @source "../views";
-@plugin "@tailwindcss/forms"
+@plugin "@tailwindcss/forms";
+/* @plugin "daisyui" {
+    themes: corporate
+}; */
+
+
+.text-xxs {
+    font-size: 6pt;
+}
