@@ -8,7 +8,7 @@ import CustomHeading from "@/Tiptap/Extenstions/CustomHeading"
 import { FigCaption } from "@/Tiptap/Extenstions/Figcaption"
 import { DocumentProps } from "@/types"
 import { Head, usePage } from "@inertiajs/react"
-import { TableCell, TableHeader, Table } from "@/Tiptap/Extenstions/Table"
+import { TableCell, TableHeader, Table} from "@/Tiptap/Extenstions/Table"
 import TableRow from "@tiptap/extension-table-row"
 import Underline from "@tiptap/extension-underline"
 import StarterKit from "@tiptap/starter-kit"
@@ -29,6 +29,8 @@ import { CiteLocalStorage, CiteManager } from "bibtex.js"
 import { Pagination } from "@/Tiptap/Extenstions/Pagination-ext"
 import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "@/Tiptap/Pagination"
 import { Stack } from "@mui/material"
+import { Heading } from "@/Tiptap/Extenstions/Heading"
+import { uniqId } from "@/Utilities/UniqId"
 
 
 
@@ -36,7 +38,9 @@ import { Stack } from "@mui/material"
 const DocumentEditor: React.FC = () => {
     const { props } = usePage<DocumentProps>()
     const extensions = [
-        StarterKit,
+        StarterKit.configure({ heading: false }),
+        Heading,
+        // SplitTable,
         // CustomHeading(props.content.main.text),
         Underline,
         Table.configure({ resizable: true }),
@@ -114,6 +118,20 @@ const DocumentEditor: React.FC = () => {
 
         },
         onCreate: async ({ editor }) => {
+            const transaction = editor.state.tr
+
+            editor.state.doc.descendants((node, pos) => {
+                if (node.type.name === 'heading' && !node.attrs.headingId) {
+                    transaction.setNodeMarkup(pos, undefined, {
+                        ...node.attrs,
+                        headingId: `heading-${uniqId()}`,
+                    })
+                }
+            })
+
+            if (transaction.docChanged) {
+                editor.view.dispatch(transaction)
+            }
             if (localStorage.getItem('document-cache')) {
                 setConfirmUnsave(true)
             }
@@ -192,9 +210,9 @@ const DocumentEditor: React.FC = () => {
                 <Sidebar />
                 <div className="flex justify-center h-full  pb-10  w-full space-x-2  pt-36" id="container"  >
                     <div className="focus:outline-none mt-24" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`, display: "flex", flexDirection: "column" }}>
-                    <Stack direction="column" flexGrow={1} paddingX={2} overflow="auto">
-                        <EditorContent editor={editor} />
-                    </Stack >
+                        <Stack direction="column" flexGrow={1} paddingX={2} overflow="auto">
+                            <EditorContent editor={editor} />
+                        </Stack >
                     </div>
 
                     {editor && (

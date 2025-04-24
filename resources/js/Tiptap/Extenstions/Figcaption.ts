@@ -22,7 +22,6 @@ export const FigCaption = Node.create({
       },
     ]
   },
-
   renderHTML({ HTMLAttributes }) {
     return ['figcaption', mergeAttributes(HTMLAttributes), 0]
   },

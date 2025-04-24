@@ -1,7 +1,7 @@
 import Table from '@tiptap/extension-table';
 import { TableCell } from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
-import { CommandProps } from '@tiptap/react';
+import { CommandProps, mergeAttributes } from '@tiptap/react';
 import { CellSelection } from "prosemirror-tables";
 
 declare module '@tiptap/core' {
@@ -160,13 +160,16 @@ const CustomTableHeader = TableHeader.extend({
           deleteTable:
             () =>
             ({ state, dispatch }:CommandProps) => {
-            //   console.log("🚫 Delete table is disabled!");
+            //   console.log("Delete table is disabled!");
               return true;
             },
 
       };
     },
   });
+
+
+
 
 export {
   CustomTableCell as TableCell,

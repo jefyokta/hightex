@@ -30,6 +30,7 @@ import { Editor } from "@tiptap/core";
 import { mm, px } from "./units";
 import { TableHandler } from "./tableMeasure";
 import { calculatePageContentPixelDimensions } from "./nodes/page/attributes/paperSize";
+import { TableMeasurement } from "../types/table";
 
 /**
  * Builds a new document with paginated content.
@@ -44,11 +45,10 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
 
     try {
         const contentNodes = collectContentNodes(doc);
-        // const contentNodes = collectAllNodes(doc)
 
         const tableHandler = new TableHandler();
         const mergedContentNodes = contentNodes.reduce((acc, { node, pos }) => {
-            if (node.type.name === 'table' && node.attrs.groupId) {
+            if (node.type.name === 'figureTable' && node.attrs.groupId) {
               if (!acc.find((n) => n.node.attrs.groupId === node.attrs.groupId)) {
                 const group = tableHandler.getTableGroup(node)
                 if (group) {
@@ -66,23 +66,20 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
             }
             return acc
           }, [] as NodePosArray)
-          contentNodes.map(n=>{
-            console.log(n.node.type.name)
-        })
-
-    mergedContentNodes.map(n=>{
-        console.log(n.node.type.name)
-    })
 
 
 
-        const nodeHeights = measureNodeHeights(view,contentNodes);
+
+
+        // const nodeHeights = measureNodeHeights(view,contentNodes);
+        const nodeHeights = measureNodeHeights(view,mergedContentNodes);
+
 
         // Record the cursor's old position
         const { tr, selection } = state;
         const oldCursorPos = selection.from;
 
-        const { newDoc, oldToNewPosMap } = buildNewDocument(editor, options, contentNodes, nodeHeights);
+        const { newDoc, oldToNewPosMap } = buildNewDocument(editor, options, mergedContentNodes, nodeHeights);
 
         // Compare the content of the documents
         if (!newDoc.content.eq(doc.content)) {
@@ -90,7 +87,7 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
             tr.setMeta("pagination", true);
 
             const newDocContentSize = newDoc.content.size;
-            const newCursorPos = mapCursorPosition(contentNodes, oldCursorPos, oldToNewPosMap, newDocContentSize);
+            const newCursorPos = mapCursorPosition(mergedContentNodes, oldCursorPos, oldToNewPosMap, newDocContentSize);
             paginationUpdateCursorPosition(tr, newCursorPos);
         }
 
@@ -124,7 +121,7 @@ const collectContentNodes = (doc: PMNode): NodePosArray => {
     doc.forEach((pageNode, pageOffset) => {
         if (isPageNode(pageNode)) {
             pageNode.forEach((pageRegionNode, pageRegionOffset) => {
-                console.log(pageRegionNode);
+                // console.log(pageRegionNode);
 
                 // Offsets in forEach loop start from 0, however, the child nodes of any given node
                 // have a starting offset of 1 (for the first child)
@@ -289,56 +286,102 @@ const buildNewDocument = (
 
     // console.log("height",bodyPixelDimensions.bodyHeight);
 
-    for (let i = 0; i < contentNodes.length; i++) {
-        const { node, pos: oldPos } = contentNodes[i];
-        const nodeHeight = nodeHeights[i];
+    const tableHandler = TableHandler.getInstance();
 
-        // const isPageFull = currentHeight + nodeHeight > bodyPixelDimensions.bodyHeight;
+ // Merge tables with shared groupIds before processing
 
-        const isPageFull = currentHeight + nodeHeight > cmToPx(21.5);
-        const isTable = node.type.name == "figureTable";
+ function flushNewPage() {
+    ({ pageNodeAttributes, pageRegionNodeAttributes, bodyPixelDimensions } =
+      getPaginationNodeAttributes(editor, pageNum));
+    currentPageHeader = constructHeader(pageRegionNodeAttributes.header);
+    cumulativeNewDocPos += getMaybeNodeSize(currentPageHeader);
+  }
 
-        if (isPageFull && currentPageContent.length > 0) {
+const pageLimit = cmToPx(21.5)
 
-            if (isTable) {
+for (let i = 0; i < contentNodes.length; i++) {
+  const { node, pos: oldPos } = contentNodes[i]
+  const baseHeight = nodeHeights[i]
+  const isTable    = node.type.name === 'figureTable'
+  let height       = baseHeight
+  let measured     : TableMeasurement | null = null
 
-            const  measurement =  TableHandler.getInstance().measureTable(node,editor.view)
-            const availableHeight = bodyPixelDimensions.bodyHeight - currentHeight
-            console.log("available height %d",availableHeight)
-            console.log("mesasurement height %d",measurement.totalHeight)
+  // ─── Hanya ukur tabel saja ───────────────────────────────────────────
+  if (isTable) {
+    measured = tableHandler.measureTable(node, editor.view)
+    height   = measured.totalHeight
+  }
 
-            if (measurement.totalHeight > availableHeight) {
-                const table =  TableHandler.getInstance().splitTableAtHeight(node,availableHeight, measurement,schema,bodyPixelDimensions.bodyHeight)
-            console.log(table);
-            }
+  const available    = pageLimit - currentHeight
+  const willOverflow = currentHeight + height > pageLimit
 
-            }
-            const pageNode = addPage(currentPageContent);
-            cumulativeNewDocPos += pageNode.nodeSize - getMaybeNodeSize(currentPageHeader);
-            currentPageContent = [];
-            currentHeight = 0;
-            existingPageNode = doc.maybeChild(++pageNum);
-            if (isPageNumInRange(doc, pageNum)) {
-                ({ pageNodeAttributes, pageRegionNodeAttributes, bodyPixelDimensions } = getPaginationNodeAttributes(editor, pageNum));
-            }
+  // ─── 1) Split tabel jika overflow ─────────────────────────────────────
+  if (isTable && willOverflow && currentPageContent.length > 0) {
+    // pasti ada measured di sini
+    const { tables , } =
+      tableHandler.splitTableAtHeight(
+        node,
+        available,
+        measured!,
+        editor.state.schema,
+        pageLimit,
+      )
 
-            // Next page header
-            currentPageHeader = constructHeader(pageRegionNodeAttributes.header);
-            cumulativeNewDocPos += getMaybeNodeSize(currentPageHeader)  ;
-        }
+      console.log(tables)
 
-        // Record the mapping from old position to new position
-        const nodeStartPosInNewDoc = cumulativeNewDocPos + currentPageContent.reduce((sum, n) => sum + n.nodeSize, 0);
+    // a) Potongan pertama + flush halaman sekarang
+    currentPageContent.push(tables[0])
+    const pg0 = addPage(currentPageContent)
+    cumulativeNewDocPos += pg0.nodeSize - getMaybeNodeSize(currentPageHeader)
 
-        oldToNewPosMap.set(oldPos, nodeStartPosInNewDoc);
+    // reset untuk halaman baru
+    currentPageContent = []
+    currentHeight      = 0
+    pageNum++;
+    flushNewPage()
 
-        currentPageContent.push(node);
-        currentHeight += nodeHeight;
+
+
+    // b) Potongan‐potongan tengah tiap halaman baru
+    for (let j = 1; j < tables.length - 1; j++) {
+      const pgMid = addPage([tables[j]])
+      cumulativeNewDocPos += pgMid.nodeSize
+      pageNum++;
+      flushNewPage()
     }
+    const offsetInPage = currentPageContent.reduce((s, n) => s + n.nodeSize, 0)
+    oldToNewPosMap.set(oldPos, cumulativeNewDocPos + offsetInPage)
 
-    if (currentPageContent.length > 0) {
-        addPage(currentPageContent);
-    } else {
+
+    continue
+  }
+
+  // ─── 2) Non‐table overflow? flush halaman biasa ─────────────────────────
+  if (!isTable && willOverflow && currentPageContent.length > 0) {
+    const pg = addPage(currentPageContent)
+    cumulativeNewDocPos += pg.nodeSize - getMaybeNodeSize(currentPageHeader)
+
+    currentPageContent = []
+    currentHeight      = 0
+    pageNum++;
+    flushNewPage()
+
+  }
+
+  // ─── 3) Map posisi cursor dan append node biasa (atau potongan terakhir table) ─
+  const offsetInPage = currentPageContent.reduce((s, n) => s + n.nodeSize, 0)
+  oldToNewPosMap.set(oldPos, cumulativeNewDocPos + offsetInPage)
+
+  currentPageContent.push(node)
+  currentHeight += height
+}
+
+// ─── 4) Flush halaman terakhir ────────────────────────────────────────────
+if (currentPageContent.length > 0) {
+  const lastPg = addPage(currentPageContent)
+  cumulativeNewDocPos += lastPg.nodeSize
+}
+else {
         pageNum--;
     }
 
@@ -446,3 +489,4 @@ const paginationUpdateCursorPosition = (tr: Transaction, newCursorPos: Nullable<
         setSelectionAtEndOfDocument(tr);
     }
 };
+

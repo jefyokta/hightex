@@ -4,27 +4,7 @@ import { EditorView } from '@tiptap/pm/view'
 
 import { NodePosArray } from '../types/node'
 
-interface TableMeasurement {
-  rowHeights: number[]
-  headerRowCount: number
-  totalHeight: number
-  breakPoints: number[]
-  cumulativeHeights: number[],
-  captionHeight:number
-}
-
-interface TableSplitResult {
-  tables: PMNode[]
-  mapping: { from: number; to: number }[]
-  groupId: string
-}
-
-interface TableGroup {
-  tables: PMNode[]
-  originalTable: PMNode
-  positions: number[]
-}
-
+import { TableMeasurement,TableGroup,TableSplitResult,TableMapping } from '../types/table'
 export class TableHandler {
   private static instance: TableHandler
   private measurementCache: Map<string, TableMeasurement> = new Map()
@@ -52,10 +32,12 @@ export class TableHandler {
     const rows = table?.content.content
 
     const caption = node.child(0)
-    console.log(rows);
+    // console.log(rows);
 
     const rowHeights = this.measureRowHeights(rows, view)
-    const headerRowCount = this.getHeaderRowCount(node)
+    const headerRowCount = this.getHeaderRowCount(table)
+
+
 
     const cumulativeHeights = rowHeights.reduce((acc, height) => {
       const prev = acc[acc.length - 1] || 0
@@ -86,11 +68,18 @@ export class TableHandler {
     schema: EditorState['schema'],
     pageHeight: number,
   ): TableSplitResult {
+
+    console.log(measurement)
+      //ambil attributenya
     const figureAttrs = node.attrs
     const caption = node.child(0)
+
+
+    availableHeight -= caption.nodeSize
     const table = node.child(1)
+    //ini row
     const rows = table.content.content
-    const headerRowCount = this.getHeaderRowCount(node)
+    const headerRowCount = this.getHeaderRowCount(node.child(1))
 
     const tables: PMNode[] = []
     let mapping: { from: number; to: number }[] = []
@@ -116,13 +105,13 @@ export class TableHandler {
 
     const firstRows = rows.slice(0, splitIndex)
     const firstTable = schema.nodes.table.create({ ...table.attrs, groupId }, firstRows)
-    const firstFigure = schema.nodes.figure.create({ ...figureAttrs, groupId }, [caption, firstTable])
+    const firstFigure = schema.nodes.figureTable.create({ ...figureAttrs, groupId }, [caption, firstTable])
     tables.push(firstFigure)
 
     if (splitIndex < rows.length) {
       const remainingRows = rows.slice(splitIndex)
       const remainingTable = schema.nodes.table.create({ ...table.attrs, groupId }, remainingRows)
-      const remainingFigure = schema.nodes.figure.create({ ...figureAttrs, groupId }, [caption, remainingTable])
+      const remainingFigure = schema.nodes.figureTable.create({ ...figureAttrs, groupId }, [caption, remainingTable])
 
       const remainingMeasurement: TableMeasurement = {
         ...measurement,
@@ -167,14 +156,14 @@ export class TableHandler {
       positions: [],
     })
 
-    return { tables, mapping, groupId }
+    return { tables, mapping, groupId  }
   }
 
 
   private measureRowHeights(rows: readonly PMNode[], view: EditorView): number[] {
     return rows.map((row, index) => {
       return row.nodeSize
-      //   console.log(row)
+        console.log(row)
       //   try {
       //     // First try to get the DOM element
       //     const dom = view.nodeDOM(row.pos) as HTMLElement
@@ -216,6 +205,7 @@ export class TableHandler {
   }
 
   private getHeaderRowCount(node: PMNode): number {
+
     return node.attrs.headerRows || 1
   }
 
@@ -368,7 +358,6 @@ export class TableHandler {
 
     return tr
   }
-
   mergeTableGroup(
     groupId: string,
     contentNodes: NodePosArray,
@@ -384,6 +373,7 @@ export class TableHandler {
     const allRows = tableNodeswithGroupId.reduce((rows, { node }, index) => {
       if (!node.content) return rows
       const tableRows = node.content.content
+      console.log(tableRows)
       // Only include header rows from the first table
       //   const contentRows =
       //     index === 0 ? tableRows : tableRows.slice(this.getHeaderRowCount(table))
