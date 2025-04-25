@@ -38,12 +38,14 @@ export interface DocumentProps extends PageProps {
 export type Image = {
     name:string,
     size:number,
+    id:number
 
 }
 
 export interface ImagesProps extends PageProps{
     images:Image[],
-    storageLeft:number,
+    used:number,
+    limit:number
 }
 
 

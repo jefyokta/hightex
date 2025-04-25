@@ -1,3 +1,6 @@
+import { ContainerScroll } from '@/Components/ui/container-scroll-animation';
+import { HeroSection } from '@/Components/ui/hero-section-demo-1';
+import { TypewriterEffect, } from '@/Components/ui/typewriter-effect';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
@@ -31,8 +34,59 @@ export default function Welcome({
                     </div>
                 </div>
             </div>
-            <div className="h-36 w-full"></div>
-            <div id="about" className='w-full h-screen p-5 py-5 '>
+            <HeroSection >
+
+
+                <ContainerScroll titleComponent={<ScrollContainerTitle />}>
+                    <div className="border-2 border-gray-300 h-full rounded-xl overflow-hidden flex flex-col">
+                        <div className="w-full h-11 border-b-2 border-gray-300 bg-gray-50 flex items-center space-x-1.5 px-3">
+                            <span className="w-3 h-3 rounded-full bg-rose-500"></span>
+                            <span className="w-3 h-3 rounded-full bg-gray-400"></span>
+                            <span className="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+
+                        <div className="flex-1 flex justify-center items-center p-4 overflow-auto bg-gray-100">
+                            <div className="relative w-full h-full flex justify-center items-start">
+                                <div className="origin-top scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 transition-transform duration-300">
+                                    <div
+                                        style={{ fontFamily: "Times New Roman" }}
+                                        className="w-[21cm] h-[29.7cm] bg-white px-[3cm] pt-[2.5cm] pb-[3cm] text-[12pt] leading-[1.8] text-black shadow-md"
+                                    >
+                                        <h1 className="text-center font-bold text-[13pt] mb-6">
+                                            BAB I<br />PENDAHULUAN
+                                        </h1>
+
+                                        <h2 className="font-bold text-[12pt] mb-2">1.1 Latar Belakang</h2>
+
+
+                                        <TypewriterEffect
+                                            words={[
+                                                {
+                                                    text:
+                                                        "Penulisan ini bertujuan untuk memberikan pemahaman mengenai pentingnya penggunaan teknologi dalam menunjang sistem informasi pada era digital ini.",
+                                                    className: "text-justify ",
+                                                },
+                                            ]}
+                                            className="text-[12pt] indent-0 leading-[1.8]"
+                                            cursorClassName="bg-black ml-1"
+                                        />
+
+                                        <h2 className="font-bold text-[12pt] mb-2">1.2 Rumusan Masalah</h2>
+                                        <p className="text-justify indent-10 mb-5">
+                                            Berdasarkan latar belakang tersebut ...
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ContainerScroll>
+
+            </HeroSection>
+
+
+
+            <div id="about" className='w-full h-screen p-5 py-5  relative'>
                 <div className='text-center  mb-30  py-5'>
                     <h1 className='my-10 mb-15 text-6xl font-semibold'>Features</h1>
                     <div className="flex justify-center space-x-10">
@@ -70,7 +124,7 @@ export default function Welcome({
                             className="w-11/12 rounded-xl brightness-70 blur-[1px] shadow-lg transform-gpu rotate-y-[-30deg] rotate-x-[10deg] translate-z-[12px] absolute  top-0 -z-50"
                         />
                     </div>
-                    <div className='md:w-1/3 text-justify p-5'>
+                    <div className='md:w-1/3 text-justify p-5 relative'>
                         <h1 className='text-5xl text-slate-700 mb-2 font-semibold'>Hightex</h1>
                         <p className='indent-5 text-slate-600'>
                             A Web Based Document Editor designed to simplify the process of writing, formatting, and managing
@@ -83,16 +137,18 @@ export default function Welcome({
                             allowing students to organize their ideas effectively. With autosave and offline access, users can work anytime,
                             anywhere, without the fear of losing progress.
                         </p>
-
-
                     </div>
 
                 </div>
-
 
 
             </div>
 
         </>
     );
+
+}
+
+const ScrollContainerTitle: React.FC = () => {
+    return <div><h1 className="text-5xl font-semibold my-5 text-green-700">A Browser Editor</h1></div>
 }

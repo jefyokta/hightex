@@ -17,8 +17,12 @@ class ImageController extends Controller
     public function index()
     {
         $images = Image::where("user_id", Auth::user()->id)->get();
+        $used = Image::where('user_id', Auth::user()->id)->sum('size');
 
-        return Inertia::render('Images/Images', ["images" => $images]);
+
+
+
+        return Inertia::render('Images/Images', ["images" => $images, "limit" => $this->maxTotalImg, "used" => $used]);
     }
 
 
