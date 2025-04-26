@@ -12,6 +12,7 @@ declare module "@tiptap/core" {
 export const FigureImage = Figure.extend({
     name:"imageFigure",
     content:"image figcaption",
+ 
     addCommands:():any =>{
 
         return {

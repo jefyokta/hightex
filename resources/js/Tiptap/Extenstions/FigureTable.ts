@@ -1,6 +1,8 @@
 import { createTable } from "@tiptap/extension-table";
 import { Figure } from "./TipTapFigure";
 import { uniqId } from "@/Utilities/UniqId";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import { FigureTableComponent } from "../ReactComponents/FigureTable";
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
@@ -144,5 +146,9 @@ export const FigureTable = Figure.extend({
         }
 
 
-    }
+    },
+    addNodeView() {
+
+        return ReactNodeViewRenderer(FigureTableComponent)
+    },
 })

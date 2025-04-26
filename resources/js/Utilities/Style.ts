@@ -52,23 +52,23 @@ export const style =
                 z-index: 2;
                 width:100%;
         }
-        .page figure[data-type="figureTable"] > figcaption {
+        .page figure[data-type="figureTable"]  figcaption {
                 width:14cm !important;
                 text-align:center;
                 counter-increment: caption-counter;
         }
-        .page figure[data-type="figureTable"] > figcaption::before {
+        .page figure[data-type="figureTable"] figcaption::before {
         content: "Tabel " counter(h1-counter) "." counter(caption-counter) " ";
         }
 
 
 
         .page figure[data-type="imageFigure"] {
-        text-align:center;
-        align-items:center;
-        widht:100%;
-        display:flex;
-        flex-direction:column;
+            text-align:center;
+            align-items:center;
+            widht:100%;
+            display:flex;
+            flex-direction:column;
         }
         .page th,
         .page td {
@@ -172,12 +172,17 @@ export const style =
             font-family: 'Times New Roman', Times, serif;
             line-height: 1.5;
             overflow-y: hidden;
+            overflow:visible !important;
             box-sizing: border-box;
             page-break-after: always;
             font-size: 12pt;
             position: relative;
 
           }
+        .body{
+                    overflow:visible !important;
+
+        }
 
           .tiptap {
             min-height: max-content;

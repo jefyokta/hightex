@@ -1,25 +1,23 @@
 import { uniqId } from '@/Utilities/UniqId'
-import { mergeAttributes, Node } from '@tiptap/core'
+import { mergeAttributes, Node, PasteRule } from '@tiptap/core'
 import { Plugin } from '@tiptap/pm/state'
+import { Fragment } from 'prosemirror-model';
+import { NodePasteRule } from '../utils';
+import { UUID } from './UUID';
 
 
 export interface FigureAttributes {
     figureId:string;
 }
-export const Figure = Node.create<FigureAttributes>({
+export const Figure = UUID.extend<FigureAttributes>({
   name: 'figure',
-
-//   addOptions() {
-//     return {
-//       HTMLAttributes: {},
-//     }
-//   },
   addAttributes() {
     return {
+    ...this.parent?.(),
       figureId: {
         default: null,
-        parseHTML: element => element.getAttribute('figureId') || uniqId(),
-        renderHTML: attributes => ({ figureId: attributes.figureId }),
+        parseHTML: element => element.getAttribute('data-figureid') || uniqId(),
+        renderHTML: attributes => ({ 'data-figureid': attributes.figureId }),
         keepOnSplit: false,
       }
     }
@@ -39,7 +37,7 @@ export const Figure = Node.create<FigureAttributes>({
       {
         tag: `figure[data-type="${this.name}"]`,
         getAttrs: dom => ({
-          figureId: dom.getAttribute('figureId') || uniqId(),
+          figureId: dom.getAttribute('data-figureId') || uniqId(),
         }),
       },
     ]
@@ -71,6 +69,18 @@ export const Figure = Node.create<FigureAttributes>({
           },
         },
       }),
+      NodePasteRule({
+        find: (node) => node.type.name === this.name,
+        handler: ({ node }) => {
+            return node.type.create({
+              ...node.attrs,
+              figureId: uniqId(),
+            }, node.content, node.marks)
+          }
+
+    })
     ]
+
   },
+
 })

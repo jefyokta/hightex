@@ -8,7 +8,7 @@ import CustomHeading from "@/Tiptap/Extenstions/CustomHeading"
 import { FigCaption } from "@/Tiptap/Extenstions/Figcaption"
 import { DocumentProps } from "@/types"
 import { Head, usePage } from "@inertiajs/react"
-import { TableCell, TableHeader, Table} from "@/Tiptap/Extenstions/Table"
+import { TableCell, TableHeader, Table } from "@/Tiptap/Extenstions/Table"
 import TableRow from "@tiptap/extension-table-row"
 import Underline from "@tiptap/extension-underline"
 import StarterKit from "@tiptap/starter-kit"
@@ -31,6 +31,10 @@ import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "@/Tip
 import { Stack } from "@mui/material"
 import { Heading } from "@/Tiptap/Extenstions/Heading"
 import { uniqId } from "@/Utilities/UniqId"
+import { Document } from "@/Tiptap/Extenstions/Document"
+import { CustomLink } from "@/Tiptap/Extenstions/Link"
+import { Paragraph } from "@tiptap/extension-paragraph"
+import { ensureUniqueId } from "@/Tiptap/utils"
 
 
 
@@ -38,10 +42,11 @@ import { uniqId } from "@/Utilities/UniqId"
 const DocumentEditor: React.FC = () => {
     const { props } = usePage<DocumentProps>()
     const extensions = [
-        StarterKit.configure({ heading: false }),
+        StarterKit.configure({ heading: false, document: false }),
+        Document,
         Heading,
-        // SplitTable,
-        // CustomHeading(props.content.main.text),
+        CustomLink,
+
         Underline,
         Table.configure({ resizable: true }),
         TableCell,
@@ -66,9 +71,9 @@ const DocumentEditor: React.FC = () => {
             // defaultPaperSize: "A4"
         }),
         PageNode.configure({
-
         }),
         BodyNode,
+        // Paragraph.extend({ content: "inline*" })
 
 
 
@@ -102,8 +107,6 @@ const DocumentEditor: React.FC = () => {
         el: "table",
 
     });
-    const [menuActiveTab, setMenuActiveTab] = useState<"format" | "table" | "image">("format");
-
 
     const [tableHelper, setTableHelper] = useState<boolean>(false)
 
@@ -118,20 +121,7 @@ const DocumentEditor: React.FC = () => {
 
         },
         onCreate: async ({ editor }) => {
-            const transaction = editor.state.tr
-
-            editor.state.doc.descendants((node, pos) => {
-                if (node.type.name === 'heading' && !node.attrs.headingId) {
-                    transaction.setNodeMarkup(pos, undefined, {
-                        ...node.attrs,
-                        headingId: `heading-${uniqId()}`,
-                    })
-                }
-            })
-
-            if (transaction.docChanged) {
-                editor.view.dispatch(transaction)
-            }
+            ensureUniqueId(editor);
             if (localStorage.getItem('document-cache')) {
                 setConfirmUnsave(true)
             }
@@ -142,8 +132,10 @@ const DocumentEditor: React.FC = () => {
                     location.reload()
                 }, 1000);
             }
-        },
+        }
+        ,
         onUpdate({ editor }) {
+            ensureUniqueId(editor);
             try {
                 editor.view.updateState(editor.state);
                 setContent(editor.getHTML())
@@ -151,6 +143,11 @@ const DocumentEditor: React.FC = () => {
                 console.error("Update Error:", error);
             }
         },
+        onPaste(e, s) {
+
+            console.log(s.content)
+        },
+
 
 
     })
@@ -182,7 +179,6 @@ const DocumentEditor: React.FC = () => {
                         }
                         `
                     }
-
                     </style>
                 </Head>}
                 <Modal show={confirmUnsave} maxWidth="xl">
@@ -208,70 +204,12 @@ const DocumentEditor: React.FC = () => {
                 </Modal>
                 <Toolbar editor={editor} mytest={handleprint} documentData={props.document} chapter={props.chapter} />
                 <Sidebar />
-                <div className="flex justify-center h-full  pb-10  w-full space-x-2  pt-36" id="container"  >
+                <div className="flex  justify-center h-full  pb-10  w-full space-x-2  pt-36" id="container"  >
                     <div className="focus:outline-none mt-24" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`, display: "flex", flexDirection: "column" }}>
                         <Stack direction="column" flexGrow={1} paddingX={2} overflow="auto">
                             <EditorContent editor={editor} />
                         </Stack >
                     </div>
-
-                    {editor && (
-                        <FloatingMenu
-                            editor={editor}
-                            tippyOptions={{
-                                duration: 100,
-                                appendTo: () => document.getElementById('container') as HTMLDivElement
-                            }}
-                            shouldShow={({ state }) => {
-                                const { from, to } = state.selection;
-
-                                return from !== to;
-                            }}
-                            className="bg-white shadow-lg text-xs  p-2 max-w-max z-50 absolute rounded-lg flex flex-col"
-                        >
-                            <div className="flex border-b border-slate-200">
-                                <button
-                                    onClick={() => setMenuActiveTab("format")}
-                                    className={`px-3 py-1 ${menuActiveTab === "format" ? "border-b-2 border-blue-500" : ""}`}
-                                >
-                                    Format
-                                </button>
-                                <button
-                                    onClick={() => setMenuActiveTab("table")}
-                                    className={`px-3 py-1 ${menuActiveTab === "table" ? " border-b-2 border-blue-500" : ""}`}
-                                >
-                                    Table
-                                </button>
-                                <button
-                                    onClick={() => setMenuActiveTab("image")}
-                                    className={`px-3 py-1 ${menuActiveTab === "image" ? " border-b-2 border-blue-500" : ""}`}
-                                >
-                                    Image
-                                </button>
-                            </div>
-                            <div className="flex gap-2 p-2">
-                                {menuActiveTab === "format" &&
-                                    DefaultMenu({ editor }).map(({ content, onClick, disabled }, i) => (
-                                        <button key={i} onClick={onClick} className={`px-1 w-6 rounded-md hover:bg-slate-200  ${disabled ? "bg-slate-500" : ""} cursor-pointer`}>
-                                            {content}
-                                        </button>
-                                    ))}
-
-                                {menuActiveTab === "table" &&
-                                    CellMenu({ editor }).map(({ content, onClick, disabled }, i) => (
-                                        <button key={i} onClick={onClick} disabled={disabled} className="px-1 min-w-6 max-w-max rounded-md hover:bg-slate-200 group disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-300 cursor-pointer">
-                                            {content}
-                                        </button>
-                                    ))}
-                                {menuActiveTab === "image" && ImageMenu({ editor }).map(({ content, disabled, onClick }, i) => {
-                                    return (<button key={i} onClick={onClick} disabled={disabled} className="px-1 min-w-6 max-w-max rounded-md hover:bg-slate-200 group disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-300 cursor-pointer">{content}</button>)
-                                })}
-                                <DeleteContent editor={editor} />
-                            </div>
-
-
-                        </FloatingMenu>
-                    )}
                 </div>
             </MainContext.Provider>
         </EditorLayout >

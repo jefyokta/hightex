@@ -29,7 +29,7 @@ export default function Sidebar() {
         { el: "math", icon: Sigma, label: "Math" },
     ];
     return (
-        <div className=" fixed w-66 py-3 ">
+        <div className="z-50 invisible md:visible fixed w-66 py-3 ">
             <div
                 id="sidebar"
                 className={`w-66 min-h-96 left-0 mt-48 shadow-xl ms-5 border border-slate-100 from-white  bg-linear-to-bl/hsl  to-green-100/30  rounded-xl

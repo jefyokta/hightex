@@ -4,6 +4,7 @@ import { LogOutModal } from '@/Components/LogOutModal';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger } from '@/Components/ui/alert-dialog';
+import { FloatingDock } from '@/Components/ui/floationg-dock';
 import { DashboardSidebar, DesktopSidebar, SidebarBody, SidebarLink } from '@/Components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
@@ -11,7 +12,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from '@radix-ui/react-alert-dialog';
 import { IconArrowLeft, IconBrandTabler, IconImageInPicture, IconSettings, IconUserBolt } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
-import { ImageIcon, Sidebar, User2, User2Icon, UserCircle } from 'lucide-react';
+import { ImageIcon, Sidebar, TestTube, User2, User2Icon, UserCircle } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
 export default function Authenticated({
@@ -32,7 +33,7 @@ export default function Authenticated({
                 "h-[100vh]",
             )}
         >
-            <SidebarDemo user={user}/>
+            <SidebarDemo user={user} />
             <Dashboard >
                 {children}
             </Dashboard>
@@ -42,7 +43,7 @@ export default function Authenticated({
 }
 
 
-export const SidebarDemo:React.FC<{user:User}> = ({user}) => {
+export const SidebarDemo: React.FC<{ user: User }> = ({ user }) => {
     const links = [
         {
             label: "Dashboard",
@@ -121,6 +122,11 @@ export const SidebarDemo:React.FC<{user:User}> = ({user}) => {
                 </SidebarBody>
             </DashboardSidebar>
             <LogOutModal show={modal} />
+
+            <div className="fixed bottom-10 left-[50%]">
+
+                <FloatingDock items={[{ title: "test", icon: (<TestTube />), href: "" },]} />
+            </div>
         </div>
     );
 }

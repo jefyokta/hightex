@@ -1,8 +1,10 @@
 import { ContainerScroll } from '@/Components/ui/container-scroll-animation';
+import { FloatingDock } from '@/Components/ui/floationg-dock';
 import { HeroSection } from '@/Components/ui/hero-section-demo-1';
 import { TypewriterEffect, } from '@/Components/ui/typewriter-effect';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
+import { Table, Image, Quote, Sigma } from "lucide-react";
 
 export default function Welcome({
     auth,
@@ -28,15 +30,12 @@ export default function Welcome({
             <div className='bg-gradient-to-br border border-white border-b-slate-200/50 from-slate-100 to-green-200/30 via-white w-full h-screen flex items-center justify-center'>
                 <div className='text-center'>
                     <h1 className='text-6xl font-bold text-teal-800'>HighTex</h1>
-                    <p className='text-slate-400'>Make Your Thesis Easier</p>
+                    <p className='text-slate-400 my-5'>A thesis editor for Students o Information System UIN SUSKA </p>
                     <div className="py-4">
                         <Link href='#' disabled className='p-2 font-semibold px-3 bg-green-700 text-sm rounded-lg text-white shadow-md my-2 ring ring-green-400/20 ring-4'>Coming Soon</Link>
                     </div>
                 </div>
             </div>
-            <HeroSection >
-
-
                 <ContainerScroll titleComponent={<ScrollContainerTitle />}>
                     <div className="border-2 border-gray-300 h-full rounded-xl overflow-hidden flex flex-col">
                         <div className="w-full h-11 border-b-2 border-gray-300 bg-gray-50 flex items-center space-x-1.5 px-3">
@@ -76,13 +75,15 @@ export default function Welcome({
                                             Berdasarkan latar belakang tersebut ...
                                         </p>
                                     </div>
+                                    <div className="sticky bottom-0 flex justify-center">
+                                        <FloatingDock desktopClassName='shadow-md' items={[{ title: "Table", icon: (<Table />), href: "" }, { title: "Image", icon: (<Image />), href: "" }, { title: "Citation", icon: (<Quote />), href: "" }, { title: "Math", icon: (<Sigma />), href: "" }]} />
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </ContainerScroll>
-
-            </HeroSection>
 
 
 
@@ -132,7 +133,6 @@ export default function Welcome({
                             without worrying about formatting complexities.
                         </p>
                         <p className="indent-5 text-slate-600 mt-5">
-
                             Featuring an intuitive interface and essential writing tools, HighTex streamlines the document creation process,
                             allowing students to organize their ideas effectively. With autosave and offline access, users can work anytime,
                             anywhere, without the fear of losing progress.
@@ -143,6 +143,11 @@ export default function Welcome({
 
 
             </div>
+            <HeroSection  className='mt-96'>
+
+
+
+</HeroSection>
 
         </>
     );
@@ -150,5 +155,5 @@ export default function Welcome({
 }
 
 const ScrollContainerTitle: React.FC = () => {
-    return <div><h1 className="text-5xl font-semibold my-5 text-green-700">A Browser Editor</h1></div>
+    return <div><h1 className="text-5xl font-bold my-5 text-green-700">A Web Based Editor</h1></div>
 }

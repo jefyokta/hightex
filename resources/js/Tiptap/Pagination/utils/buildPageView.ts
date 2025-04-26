@@ -315,7 +315,7 @@ for (let i = 0; i < contentNodes.length; i++) {
   const available    = pageLimit - currentHeight
   const willOverflow = currentHeight + height > pageLimit
 
-  // ─── 1) Split tabel jika overflow ─────────────────────────────────────
+//   // ─── 1) Split tabel jika overflow ─────────────────────────────────────
   if (isTable && willOverflow && currentPageContent.length > 0) {
     // pasti ada measured di sini
     const { tables , } =

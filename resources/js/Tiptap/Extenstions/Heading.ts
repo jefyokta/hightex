@@ -3,12 +3,11 @@ import { uniqId } from '@/Utilities/UniqId'
 import Heading from '@tiptap/extension-heading'
 import { Plugin } from '@tiptap/pm/state'
 import { mergeAttributes } from '@tiptap/react'
+import { UUID } from './UUID'
 
 
  const CHeading =  Heading.extend(
     {
-
-
         addAttributes(){
 
             return {
@@ -17,7 +16,12 @@ import { mergeAttributes } from '@tiptap/react'
                     parseHTML:(element)=> ( {   headingId:  element.getAttribute('id') || `heading-${uniqId()}`}),
                     renderHTML:(attributes) =>({id:attributes.headingId || `heading-${uniqId()}`}),
                     keepOnSplit:false
+                },
+                id:null,
+                shouldUnique:{
+                    default:true
                 }
+
             }
         },
 

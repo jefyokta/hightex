@@ -163,6 +163,7 @@ export const SidebarLink = ({
 }: {
     link: Links;
     className?: string;
+    active?:boolean;
 }) => {
     const { open, animate } = useSidebar();
     const Element = link.as && link.as == 'button' ? CustomDiv : Link
@@ -170,7 +171,7 @@ export const SidebarLink = ({
         <Element
             href={link.href}
             className={cn(
-                "flex items-center cursor-pointer max-w-max p-0 hover:bg-transparent justify-start gap-2  group/sidebar py-2",
+                "flex items-center  px-5  cursor-pointer max-w-max p-0  justify-start gap-2  group/sidebar py-2",
                 className
             )}
 

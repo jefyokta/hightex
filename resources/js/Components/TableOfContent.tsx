@@ -2,11 +2,11 @@ import React from "react";
 import { type Mark, Node } from "@tiptap/pm/model";
 
 export type TableOfContentProps = {
-  pages: Node[]; /**Page node */
+  pages: Node[];
 };
 
 type Heading = {
-  node: Node;   
+  node: Node;
   level: number;
   page: number;
 };
