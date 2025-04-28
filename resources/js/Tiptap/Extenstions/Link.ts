@@ -1,6 +1,6 @@
 import { Node, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
-import { Link } from '../ReactComponents/Link'
+import { LinkComponent } from '../ReactComponents/Link'
 
 export const CustomLink = Node.create({
   name: 'customLink',
@@ -18,17 +18,17 @@ export const CustomLink = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'a[href]',
+        tag: 'div[data-type="link-component"]',
       },
     ]
   },
 
   renderHTML({ HTMLAttributes,node }) {
-    return ['a', mergeAttributes(HTMLAttributes),0]
+    return ['div', mergeAttributes({"data-type":"link-component"},HTMLAttributes),]
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(Link)
+    return ReactNodeViewRenderer(LinkComponent)
   },
 
 

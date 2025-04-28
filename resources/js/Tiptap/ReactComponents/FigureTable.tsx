@@ -6,10 +6,9 @@ import { useEffect, useState } from "react";
 
 export const FigureTableComponent: React.FC<NodeViewProps> = ({ node, updateAttributes, editor, getPos, deleteNode }) => {
     const [insideNode, setInsideNode] = useState(false);
-
-    console.log(node.attrs)
     const copy = () => {
-        node.copy();
+        navigator.clipboard.writeText(`@figureTable[${node.attrs.id}]`)
+        navigator.clipboard.readText().then(r => console.log(r));
     }
     useEffect(() => {
         const handler = ({ editor }: { editor: Editor }) => {
@@ -22,12 +21,15 @@ export const FigureTableComponent: React.FC<NodeViewProps> = ({ node, updateAttr
             }
         };
 
+
         editor.on("selectionUpdate", handler);
 
         return () => {
             editor.off("selectionUpdate", handler);
         };
     }, [editor, getPos, node.nodeSize]);
+
+
     return (
         <NodeViewWrapper
             style={{ overflow: "visible" }}
@@ -36,6 +38,7 @@ export const FigureTableComponent: React.FC<NodeViewProps> = ({ node, updateAttr
             data-type="figureTable"
             data-groupid={node.attrs.groupId || null}
             data-figureid={node.attrs.figureId}
+            id={node.attrs.id}
         >
             <DropdownMenu>
                 <DropdownMenuTrigger className={`absolute ${insideNode ? "visible opacity-100" : "invisible opacity-0"
@@ -50,12 +53,9 @@ export const FigureTableComponent: React.FC<NodeViewProps> = ({ node, updateAttr
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onSelect={copy}>
                         <Copy className="mr-2" />
-                        Copy
+                        Copy Id
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => alert("Copy ref")}>
-                        <Copy className="mr-2" />
-                        Copy ref
-                    </DropdownMenuItem>
+
                     <DropdownMenuItem onSelect={deleteNode} className="text-red-500">
                         <Delete className="mr-2" />
                         Delete

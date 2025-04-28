@@ -33,8 +33,11 @@ import { Heading } from "@/Tiptap/Extenstions/Heading"
 import { uniqId } from "@/Utilities/UniqId"
 import { Document } from "@/Tiptap/Extenstions/Document"
 import { CustomLink } from "@/Tiptap/Extenstions/Link"
-import { Paragraph } from "@tiptap/extension-paragraph"
 import { ensureUniqueId } from "@/Tiptap/utils"
+import { Ref } from "@/Tiptap/Extenstions/Ref"
+import { FloatingDock } from "@/Components/ui/floationg-dock"
+import { ImageIcon, Quote, Sigma, Table2Icon } from "lucide-react"
+import ChapterProvider from "@/Utilities/ChapterProvider"
 
 
 
@@ -42,7 +45,7 @@ import { ensureUniqueId } from "@/Tiptap/utils"
 const DocumentEditor: React.FC = () => {
     const { props } = usePage<DocumentProps>()
     const extensions = [
-        StarterKit.configure({ heading: false, document: false }),
+        StarterKit.configure({ heading: false, document: false, }),
         Document,
         Heading,
         CustomLink,
@@ -73,12 +76,13 @@ const DocumentEditor: React.FC = () => {
         PageNode.configure({
         }),
         BodyNode,
-        // Paragraph.extend({ content: "inline*" })
+        Ref
 
 
 
 
     ]
+    ChapterProvider.setchapter(props.content.main.number)
     CiteManager.init(new CiteLocalStorage(`@book{butti2023high,
   title={High Performance with Laravel Octane: Learn to fine-tune and optimize PHP and Laravel apps using Octane and an asynchronous approach},
   author={Butti, Roberto},
@@ -107,6 +111,8 @@ const DocumentEditor: React.FC = () => {
         el: "table",
 
     });
+
+    const testContent = "<div data-type='ref-component' data-ref='figureTable' data-link='rera'></div>"
 
     const [tableHelper, setTableHelper] = useState<boolean>(false)
 
@@ -145,8 +151,9 @@ const DocumentEditor: React.FC = () => {
         },
         onPaste(e, s) {
 
-            console.log(s.content)
+            // console.log(s.content.content, e)
         },
+
 
 
 
@@ -192,6 +199,7 @@ const DocumentEditor: React.FC = () => {
                             >
                                 ✕
                             </button>
+
                         </div>
                         <div className="p-5">
                             <p>We found unsaved document for {props.content.name} do you wanna save it?</p>
@@ -204,6 +212,9 @@ const DocumentEditor: React.FC = () => {
                 </Modal>
                 <Toolbar editor={editor} mytest={handleprint} documentData={props.document} chapter={props.chapter} />
                 <Sidebar />
+                <div className="fixed md:hidden  w-full z-[90] bottom-2  flex justify-center">
+                    <FloatingDock desktopClassName='shadow-md' items={[{ title: "Table", icon: (<Table2Icon />), href: "" }, { title: "Image", icon: (<ImageIcon />), href: "" }, { title: "Citation", icon: (<Quote />), href: "" }, { title: "Math", icon: (<Sigma />), href: "" }]} />
+                </div>
                 <div className="flex  justify-center h-full  pb-10  w-full space-x-2  pt-36" id="container"  >
                     <div className="focus:outline-none mt-24" style={{ counterReset: `h1-counter ${props.content.main.number - 1}`, display: "flex", flexDirection: "column" }}>
                         <Stack direction="column" flexGrow={1} paddingX={2} overflow="auto">

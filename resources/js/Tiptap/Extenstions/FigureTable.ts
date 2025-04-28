@@ -1,7 +1,7 @@
 import { createTable } from "@tiptap/extension-table";
 import { Figure } from "./TipTapFigure";
 import { uniqId } from "@/Utilities/UniqId";
-import { ReactNodeViewRenderer } from "@tiptap/react";
+import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react";
 import { FigureTableComponent } from "../ReactComponents/FigureTable";
 
 declare module "@tiptap/core" {
@@ -108,9 +108,17 @@ export const FigureTable = Figure.extend({
         return {
             ...this.parent?.(),
             groupId:{
-            default:""
-        }}
+            default:"",
+            renderHTML:(attributes) =>({'data-groupid':attributes.groupId||null}),
+        }
+    }
     },
+
+    // renderHTML:({node,HTMLAttributes})=>{
+
+    //     return ['figure',mergeAttributes(HTMLAttributes,{id:node.attrs.id || uniqId()})]
+
+    // },
     addCommands():any{
         return {
             addFigureTable:()=>

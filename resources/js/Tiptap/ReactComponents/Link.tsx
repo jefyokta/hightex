@@ -4,7 +4,7 @@ import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 import { useState } from "react";
 
-export const Link = ({ node, updateAttributes }: NodeViewProps) => {
+export const LinkComponent = ({ node, updateAttributes }: NodeViewProps) => {
     const href = node.attrs.href || "";
     const [url, setUrl] = useState(href);
 
@@ -15,16 +15,17 @@ export const Link = ({ node, updateAttributes }: NodeViewProps) => {
     };
 
     return (
-        <NodeViewWrapper className="inline">
+        <NodeViewWrapper className="link-component inline" data-type="link-component">
             <Popover>
-                <PopoverTrigger asChild>
+                <PopoverTrigger >
                     <a
-                        // href="#"
+                        data-link-component
                         rel="noopener noreferrer"
                         className="text-blue-600 underline"
                     >
-                        <NodeViewContent as="span" >{content}</NodeViewContent>
+                        {content || 'link'}
                     </a>
+                    <NodeViewContent  ></NodeViewContent>
                 </PopoverTrigger>
                 <PopoverContent className="w-64">
                     <div className="flex flex-col gap-2">

@@ -11,20 +11,20 @@ export const MathBlock = Node.create({
     return {
       latex: {
         default: '',
-        parseHTML: (element) => element.getAttribute('latex') || '',
+        parseHTML: (element) => element.getAttribute('data-latex') || '',
         renderHTML: (attributes) => ({ latex: attributes.latex }),
       },
     };
   },
 
   parseHTML() {
-    return [{ tag: 'div[latex]' }];
+    return [{ tag: 'div[data-latex]' }];
   },
 
   renderHTML({ node }) {
     return [
       'div',
-      { latex: node.attrs.latex },
+      { 'data-latex': node.attrs.latex },
       katex.renderToString(node.attrs.latex, { throwOnError: false, displayMode: true }),
     ];
   },

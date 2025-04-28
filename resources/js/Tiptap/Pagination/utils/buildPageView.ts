@@ -46,7 +46,7 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
     try {
         const contentNodes = collectContentNodes(doc);
 
-        const tableHandler = new TableHandler();
+        const tableHandler = TableHandler.getInstance();
         const mergedContentNodes = contentNodes.reduce((acc, { node, pos }) => {
             if (node.type.name === 'figureTable' && node.attrs.groupId) {
               if (!acc.find((n) => n.node.attrs.groupId === node.attrs.groupId)) {
@@ -291,7 +291,8 @@ const buildNewDocument = (
  // Merge tables with shared groupIds before processing
 
  function flushNewPage() {
-    ({ pageNodeAttributes, pageRegionNodeAttributes, bodyPixelDimensions } =
+    (
+    { pageNodeAttributes, pageRegionNodeAttributes, bodyPixelDimensions } =
       getPaginationNodeAttributes(editor, pageNum));
     currentPageHeader = constructHeader(pageRegionNodeAttributes.header);
     cumulativeNewDocPos += getMaybeNodeSize(currentPageHeader);
@@ -300,7 +301,8 @@ const buildNewDocument = (
 const pageLimit = cmToPx(21.5)
 
 for (let i = 0; i < contentNodes.length; i++) {
-  const { node, pos: oldPos } = contentNodes[i]
+    const { node, pos: oldPos } = contentNodes[i]
+    console.log(nodeHeights[i],node)
   const baseHeight = nodeHeights[i]
   const isTable    = node.type.name === 'figureTable'
   let height       = baseHeight

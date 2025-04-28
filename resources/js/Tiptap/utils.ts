@@ -1,8 +1,7 @@
 import { uniqId } from "@/Utilities/UniqId";
 import { Fragment, Node, Slice } from "@tiptap/pm/model";
-import { Editor } from "@tiptap/react";
-import { Plugin } from "prosemirror-state";
-
+import { Attribute, Editor, PasteRule } from "@tiptap/react";
+import { Plugin, PluginKey } from 'prosemirror-state'
 
 
 export const ensureUniqueId =(editor:Editor)=>{
@@ -68,4 +67,6 @@ const mapFragment =(fragment: Fragment, config: NodePasteRuleConfig) =>{
   });
   return Fragment.fromArray(children);
 }
+
+
 

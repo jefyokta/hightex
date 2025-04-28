@@ -77,6 +77,8 @@ export class TableHandler {
 
     availableHeight -= caption.nodeSize
     const table = node.child(1)
+    console.log(table)
+
     //ini row
     const rows = table.content.content
     const headerRowCount = this.getHeaderRowCount(node.child(1))

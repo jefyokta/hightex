@@ -7,7 +7,7 @@ export const UUID = Node.create({
 
       return {
         id:{
-            // default:crypto.randomUUID(),
+            default:crypto.randomUUID(),
             parseHTML: element => element.getAttribute('id') || crypto.randomUUID() ,
             renderHTML: attributes => ({ id: attributes.id || crypto.randomUUID()}),
             keepOnSplit:false

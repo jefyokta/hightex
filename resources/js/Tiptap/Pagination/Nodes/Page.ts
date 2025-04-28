@@ -27,7 +27,7 @@ type PageNodeOptions = {
 export const PageNode = Node.create<PageNodeOptions>({
     name: PAGE_NODE_NAME,
     group: "block",
-    content: `block{1,3}`, // We must have a body section and can optionally have a header and footer
+    content: `block+`, // We must have a body section and can optionally have a header and footer
     defining: true,
     isolating: false,
 
@@ -89,4 +89,5 @@ export const PageNode = Node.create<PageNodeOptions>({
     addProseMirrorPlugins() {
         return [constructChildOnlyClipboardPlugin("pageClipboardPlugin", this.editor.schema, isPageNode)];
     },
+
 });
