@@ -22,6 +22,10 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get("/docs",function(){
+    return '';
+});
+
 
 Route::post('/login', function (Request $request) {
     $credentials = $request->validate([

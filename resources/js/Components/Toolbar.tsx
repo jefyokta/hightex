@@ -225,7 +225,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter, mytest
                         <div className="p-2 bg-white/70 px-3 rounded-xl shadow-md">
                             <div className="font-bold text-sm">Utilities</div>
                             <div className="flex space-x-1 text-slate-800 px-2 pt-2">
-                                <button className="cursor-pointer hover:bg-slate-100 px-1  rounded-md " onClick={() => editor?.chain().focus().insertContent({type:"refComponent",attrs:{ref:"figureTable",link:"test"}}).run()}>Citation</button>
+                                <button className="cursor-pointer hover:bg-slate-100 px-1  rounded-md " onClick={() => editor?.chain().focus().insertContent({type:"blockMath",attrs:{latex:"c = \\pm\\root{a^2 + b^2}\\in\\RR"}}).run()}>Citation</button>
                                 <button className="cursor-pointer hover:bg-slate-100 px-1 rounded-md ">Math</button>
                             </div>
                         </div>

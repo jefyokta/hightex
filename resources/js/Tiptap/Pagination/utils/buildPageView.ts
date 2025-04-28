@@ -48,14 +48,17 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
 
         const tableHandler = TableHandler.getInstance();
         const mergedContentNodes = contentNodes.reduce((acc, { node, pos }) => {
-            if (node.type.name === 'figureTable' && node.attrs.groupId) {
+            if ((node.type.name === 'figureTable'|| node.type.name ==='splittedTable') && node.attrs.groupId) {
               if (!acc.find((n) => n.node.attrs.groupId === node.attrs.groupId)) {
                 const group = tableHandler.getTableGroup(node)
                 if (group) {
                   const mergedTable = tableHandler.mergeTableGroup(
                     node.attrs.groupId,
                     contentNodes,
+                    editor.schema
                   )
+
+                  console.log(mergedTable)
                   if (mergedTable) {
                     acc.push({ node: mergedTable, pos })
                   }
@@ -67,7 +70,7 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
             return acc
           }, [] as NodePosArray)
 
-
+        //   console.log(mergedContentNodes)
 
 
 
@@ -302,11 +305,13 @@ const pageLimit = cmToPx(21.5)
 
 for (let i = 0; i < contentNodes.length; i++) {
     const { node, pos: oldPos } = contentNodes[i]
-    console.log(nodeHeights[i],node)
   const baseHeight = nodeHeights[i]
-  const isTable    = node.type.name === 'figureTable'
+  const isTable    = node.type.name === 'figureTable' || node.type.name === 'splittedTable'
   let height       = baseHeight
   let measured     : TableMeasurement | null = null
+
+
+
 
   // ─── Hanya ukur tabel saja ───────────────────────────────────────────
   if (isTable) {
@@ -320,16 +325,17 @@ for (let i = 0; i < contentNodes.length; i++) {
 //   // ─── 1) Split tabel jika overflow ─────────────────────────────────────
   if (isTable && willOverflow && currentPageContent.length > 0) {
     // pasti ada measured di sini
-    const { tables , } =
+    const res  =
       tableHandler.splitTableAtHeight(
         node,
         available,
         measured!,
         editor.state.schema,
         pageLimit,
+        editor.view
       )
-
-      console.log(tables)
+      const { tables} = res
+      console.log(res)
 
     // a) Potongan pertama + flush halaman sekarang
     currentPageContent.push(tables[0])
@@ -344,8 +350,7 @@ for (let i = 0; i < contentNodes.length; i++) {
 
 
 
-    // b) Potongan‐potongan tengah tiap halaman baru
-    for (let j = 1; j < tables.length - 1; j++) {
+    for (let j = 1; j < tables.length; j++) {
       const pgMid = addPage([tables[j]])
       cumulativeNewDocPos += pgMid.nodeSize
       pageNum++;
@@ -353,7 +358,6 @@ for (let i = 0; i < contentNodes.length; i++) {
     }
     const offsetInPage = currentPageContent.reduce((s, n) => s + n.nodeSize, 0)
     oldToNewPosMap.set(oldPos, cumulativeNewDocPos + offsetInPage)
-
 
     continue
   }

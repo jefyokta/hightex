@@ -38,6 +38,9 @@ import { Ref } from "@/Tiptap/Extenstions/Ref"
 import { FloatingDock } from "@/Components/ui/floationg-dock"
 import { ImageIcon, Quote, Sigma, Table2Icon } from "lucide-react"
 import ChapterProvider from "@/Utilities/ChapterProvider"
+import { SplittedTable } from "@/Tiptap/Extenstions/SplittedTable"
+import { MathBlock } from "@/Tiptap/Extenstions/Math"
+import "katex/dist/katex.min.css";
 
 
 
@@ -76,7 +79,9 @@ const DocumentEditor: React.FC = () => {
         PageNode.configure({
         }),
         BodyNode,
-        Ref
+        Ref,
+        SplittedTable,
+        MathBlock
 
 
 

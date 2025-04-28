@@ -1,6 +1,8 @@
 import { CommandProps, Node } from '@tiptap/core';
 import { mergeAttributes } from '@tiptap/core';
+import { ReactNodeViewRenderer } from '@tiptap/react';
 import katex from 'katex';
+import { MathBlockComponent } from '../ReactComponents/MathBlock';
 
 
 export const MathBlock = Node.create({
@@ -28,6 +30,10 @@ export const MathBlock = Node.create({
       katex.renderToString(node.attrs.latex, { throwOnError: false, displayMode: true }),
     ];
   },
+
+  addNodeView(){
+    return ReactNodeViewRenderer(MathBlockComponent)
+  }
 });
 
 export const MathInline = Node.create({
@@ -36,7 +42,7 @@ export const MathInline = Node.create({
   inline: true,
   code: true,
   parseHTML() {
-    return [{ tag: 'span[latex]' }];
+    return [{ tag: 'span[data-latex]' }];
   },
   renderHTML({ node }) {
     return [

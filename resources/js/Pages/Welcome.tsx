@@ -30,7 +30,7 @@ export default function Welcome({
             <div className='bg-gradient-to-br border border-white border-b-slate-200/50 from-slate-100 to-green-200/30 via-white w-full h-screen flex items-center justify-center'>
                 <div className='text-center'>
                     <h1 className='text-6xl font-bold text-teal-800'>HighTex</h1>
-                    <p className='text-slate-400 my-5'>A thesis editor for Students o Information System UIN SUSKA </p>
+                    <p className='text-slate-400 my-5'>A thesis editor for students of Information System UIN SUSKA </p>
                     <div className="py-4">
                         <Link href='#' disabled className='p-2 font-semibold px-3 bg-green-700 text-sm rounded-lg text-white shadow-md my-2 ring ring-green-400/20 ring-4'>Coming Soon</Link>
                     </div>

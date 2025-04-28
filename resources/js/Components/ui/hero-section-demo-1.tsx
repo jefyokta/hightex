@@ -49,7 +49,7 @@ export const HeroSection: React.FC<PropsWithChildren<{className?:string}>> = ({ 
                     }}
                     className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-600 dark:text-neutral-400"
                 >
-                    Built and initiate by student of
+                    Built and initiate by Jepi Oktamipa as Student of IS UIN SUSKA
                 </motion.p>
                 <motion.div
                     initial={{

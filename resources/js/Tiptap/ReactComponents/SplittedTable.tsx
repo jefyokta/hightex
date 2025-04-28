@@ -1,15 +1,12 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/Components/ui/dropdown-menu";
 import { Editor, NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react"
-import { Copy, Delete } from "lucide-react";
+import { Delete } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
-export const FigureTableComponent: React.FC<NodeViewProps> = ({ node, updateAttributes, editor, getPos, deleteNode }) => {
+export const SplittedTableComponent: React.FC<NodeViewProps> = ({ node, editor, getPos, deleteNode }) => {
     const [insideNode, setInsideNode] = useState(false);
-    const copy = () => {
-        navigator.clipboard.writeText(`@figureTable[${node.attrs.id}]`)
-        navigator.clipboard.readText().then(r => console.log(r));
-    }
+
     useEffect(() => {
         const handler = ({ editor }: { editor: Editor }) => {
             const { from, to } = editor.state.selection;
@@ -35,10 +32,7 @@ export const FigureTableComponent: React.FC<NodeViewProps> = ({ node, updateAttr
             style={{ overflow: "visible" }}
             className="relative"
             as="figure"
-            data-type="figureTable"
             data-groupid={node.attrs.groupId || null}
-            data-figureid={node.attrs.figureId}
-            id={node.attrs.id}
         >
             <DropdownMenu>
                 <DropdownMenuTrigger className={`absolute ${insideNode ? "visible opacity-100" : "invisible opacity-0"
@@ -49,10 +43,6 @@ export const FigureTableComponent: React.FC<NodeViewProps> = ({ node, updateAttr
                 <DropdownMenuContent>
                     <DropdownMenuLabel>Figure Table</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onSelect={copy}>
-                        <Copy className="mr-2" />
-                        Copy Ref
-                    </DropdownMenuItem>
                     <DropdownMenuItem onSelect={deleteNode} className="text-red-500">
                         <Delete className="mr-2" />
                         Delete
