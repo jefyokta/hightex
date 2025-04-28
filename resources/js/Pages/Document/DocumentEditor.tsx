@@ -50,9 +50,9 @@ const DocumentEditor: React.FC = () => {
         Caption,
         FloatingMenu,
         columnResizing as any,
-        Pagination.configure({
-            pageHeight: 29.7,
-        })
+        // Pagination.configure({
+        //     pageHeight: 29.7,
+        // })
 
 
     ]
