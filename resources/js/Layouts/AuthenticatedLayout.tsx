@@ -1,13 +1,10 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import { LogOutModal } from '@/Components/LogOutModal';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger } from '@/Components/ui/alert-dialog';
-import { FloatingDock } from '@/Components/ui/floationg-dock';
-import { DashboardSidebar, DesktopSidebar, SidebarBody, SidebarLink } from '@/Components/ui/sidebar';
+
+import { DashboardSidebar, DesktopSidebar, SidebarBody, SidebarLink, useSidebar } from '@/Components/ui/sidebar';
 import { cn } from '@/lib/utils';
-import { User } from '@/types';
+import { PageProps, User } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from '@radix-ui/react-alert-dialog';
 import { IconArrowLeft, IconBrandTabler, IconImageInPicture, IconSettings, IconUserBolt } from '@tabler/icons-react';
@@ -20,11 +17,10 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
-    const [open, setOpen] = useState<boolean>(false)
 
-    const links: string[] = []
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
 
     return (
         <div
@@ -35,6 +31,7 @@ export default function Authenticated({
         >
             <SidebarDemo user={user} />
             <Dashboard >
+
                 {children}
             </Dashboard>
         </div >
@@ -67,18 +64,10 @@ export const SidebarDemo: React.FC<{ user: User }> = ({ user }) => {
             ),
         },
 
-        {
-            label: "Logout",
-            href: "",
-            icon: (
-                <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-            ),
-            as: "button"
-        },
+
     ];
     const [open, setOpen] = useState(false);
 
-    const [modal, setModal] = useState(false)
     return (
         <div
             className={cn(
@@ -93,42 +82,56 @@ export const SidebarDemo: React.FC<{ user: User }> = ({ user }) => {
                         <div className="mt-8 flex flex-col gap-2">
                             {links.map((link, idx) => (
 
-                                link.as && link.as == 'button' ? <button key={idx}>                                    <SidebarLink link={link} />
-                                </button> :
-                                    <SidebarLink key={idx} link={link} />
+                                <SidebarLink key={idx} link={link} />
                             ))}
                         </div>
                     </div>
                     <div>
-                        <SidebarLink
+                        {/* <SidebarLink
                             link={{
                                 label: user.name,
                                 href: route('profile.update'),
                                 icon: (
 
                                     <UserCircle></UserCircle>
-                                    // <img
-                                    //     src="https://assets.aceternity.com/manu.png"
-                                    //     className="h-7 w-7 shrink-0 rounded-full"
-                                    //     width={50}
-                                    //     height={50}
-                                    //     alt="Avatar"
-                                    // />
                                 ),
                             }}
-                        />
+                        /> */}
+                        <UserSidebar />
+
                     </div>
 
                 </SidebarBody>
             </DashboardSidebar>
-            <LogOutModal show={modal} />
 
-            <div className="fixed bottom-10 left-[50%]">
-
-                <FloatingDock items={[{ title: "test", icon: (<TestTube />), href: "" },]} />
-            </div>
         </div>
     );
+}
+
+
+const UserSidebar: React.FC = () => {
+    const { animate, open } = useSidebar()
+    const [modal, setModal] = useState(false);
+    const { auth } = usePage().props
+    return (<>
+        <button className="flex items-center  cursor-pointer max-w-max p-0  justify-start gap-2  group/sidebar py-2"
+            onClick={() => setModal(!modal)}
+        >
+            <UserCircle></UserCircle>
+            <motion.span
+                animate={{
+                    display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                    opacity: animate ? (open ? 1 : 0) : 1,
+                }}
+                className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+
+            >{auth.user.name}</motion.span>
+        </button>
+        <LogOutModal show={modal} setShowModal={setModal}/>
+
+
+    </>)
+
 }
 export const Logo = () => {
     return (
@@ -150,7 +153,7 @@ export const Logo = () => {
 export const LogoIcon = () => {
     return (
         <a
-            href="#"
+            href="/"
             className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
         >
             <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />

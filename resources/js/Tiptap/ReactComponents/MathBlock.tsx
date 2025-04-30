@@ -6,15 +6,16 @@ import katex from "katex"
 import { useEffect, useRef, useState } from "react"
 import { TextArea } from "react-aria-components"
 
-export const MathBlockComponent: React.FC<NodeViewProps> = ({ node }) => {
+export const MathBlockComponent: React.FC<NodeViewProps> = ({ node, updateAttributes }) => {
 
     const [latex, setLatex] = useState(node.attrs.latex)
     const containerRef = useRef<HTMLDivElement>()
 
     useEffect(() => {
         katex.render(latex, containerRef.current as HTMLDivElement, { throwOnError: false })
+        updateAttributes({latex})
     }, [latex])
-    return <NodeViewWrapper>
+    return <NodeViewWrapper className="h-auto">
 
         <div className="flex justify-center">
             <Popover>

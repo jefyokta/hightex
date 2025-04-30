@@ -164,7 +164,18 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter, mytest
                                 </button>
                                 <button
 
-                                    onClick={() => editor?.chain().toggleBulletList().run()}
+                                    onClick={() => {
+
+                                        if (!editor?.isActive("bulletList")) {
+                                            editor?.chain().toggleBulletList().run()
+                                        } else {
+                                            if (editor.isActive("listItem")) {
+                                                editor.chain().liftListItem('listItem').run()
+                                            }
+                                            editor?.chain().toggleBulletList().run()
+
+                                        }
+                                    }}
 
                                     className={`${editor?.isActive('bulletList') ? 'bg-indigo-700 text-white hover:bg-indigo-600' : 'hover:bg-slate-200'} cursor-pointer hover:bg-slate-100 p-1 rounded-md `}>
                                     <svg className="w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -225,7 +236,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter, mytest
                         <div className="p-2 bg-white/70 px-3 rounded-xl shadow-md">
                             <div className="font-bold text-sm">Utilities</div>
                             <div className="flex space-x-1 text-slate-800 px-2 pt-2">
-                                <button className="cursor-pointer hover:bg-slate-100 px-1  rounded-md " onClick={() => editor?.chain().focus().insertContent({type:"blockMath",attrs:{latex:"c = \\pm\\root{a^2 + b^2}\\in\\RR"}}).run()}>Citation</button>
+                                <button className="cursor-pointer hover:bg-slate-100 px-1  rounded-md " onClick={() => editor?.chain().focus().insertContent({ type: "blockMath", attrs: { latex: "c = \\pm\\root{a^2 + b^2}\\in\\RR" } }).run()}>Citation</button>
                                 <button className="cursor-pointer hover:bg-slate-100 px-1 rounded-md ">Math</button>
                             </div>
                         </div>
@@ -249,7 +260,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ editor, documentData, chapter, mytest
                                 <button className="p-1 font-semibold px-2 cursor-pointer hover:text-slate-100 bg-slate-700 text-xs rounded-lg text-white shadow-md my-2 ring ring-slate-400/20 ring-4" >
 
                                     <Link href="/dashboard">
-                                    Back
+                                        Back
                                     </Link>
                                 </button>
                             </div>

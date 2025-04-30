@@ -13,24 +13,20 @@ import TableRow from "@tiptap/extension-table-row"
 import Underline from "@tiptap/extension-underline"
 import StarterKit from "@tiptap/starter-kit"
 import { columnResizing } from "prosemirror-tables"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AutoCapitalize from "@/Tiptap/Extenstions/AutoCapitalize"
 import { FigureTable } from "@/Tiptap/Extenstions/FigureTable"
 import { Caption } from "@/Tiptap/Extenstions/Caption"
 import { FigureImage } from "@/Tiptap/Extenstions/FigureImage"
 import { Image } from "@/Tiptap/Extenstions/Image"
 import { SaveOnLoad } from "@/Utilities/Save"
-import { CellMenu, DefaultMenu, ImageMenu } from "@/Components/Menu"
-import { DeleteContent } from "@/Components/DeleteContent"
 import Modal from "@/Components/Modal"
 import PrimaryButton from "@/Components/PrimaryButton"
 import DangerButton from "@/Components/DangerButton"
 import { CiteLocalStorage, CiteManager } from "bibtex.js"
-import { Pagination } from "@/Tiptap/Extenstions/Pagination-ext"
 import PaginationExtension, { PageNode, BodyNode, HeaderFooterNode } from "@/Tiptap/Pagination"
 import { Stack } from "@mui/material"
 import { Heading } from "@/Tiptap/Extenstions/Heading"
-import { uniqId } from "@/Utilities/UniqId"
 import { Document } from "@/Tiptap/Extenstions/Document"
 import { CustomLink } from "@/Tiptap/Extenstions/Link"
 import { ensureUniqueId } from "@/Tiptap/utils"
@@ -40,8 +36,8 @@ import { ImageIcon, Quote, Sigma, Table2Icon } from "lucide-react"
 import ChapterProvider from "@/Utilities/ChapterProvider"
 import { SplittedTable } from "@/Tiptap/Extenstions/SplittedTable"
 import { MathBlock } from "@/Tiptap/Extenstions/Math"
-import "katex/dist/katex.min.css";
-
+import "katex/dist/katex.css";
+import { TableHandler } from "@/Tiptap/Pagination/utils/tableMeasure"
 
 
 
@@ -52,7 +48,6 @@ const DocumentEditor: React.FC = () => {
         Document,
         Heading,
         CustomLink,
-
         Underline,
         Table.configure({ resizable: true }),
         TableCell,
@@ -74,14 +69,14 @@ const DocumentEditor: React.FC = () => {
                 right: 30,
                 bottom: 60
             },
-            // defaultPaperSize: "A4"
         }),
         PageNode.configure({
         }),
         BodyNode,
         Ref,
         SplittedTable,
-        MathBlock
+        MathBlock,
+
 
 
 
@@ -98,11 +93,6 @@ const DocumentEditor: React.FC = () => {
     const content = props.content.contents
 
     const [contents, setContent] = useState<JSONContent | string>([
-        // {
-        //     type: "heading",
-        //     attrs: { level: 1 },
-        //     content: [{ type: "text", text: props.content.main.text }]
-        // },
         ...content])
 
     const schema = {
@@ -110,14 +100,23 @@ const DocumentEditor: React.FC = () => {
         content: contents
     }
 
+    useEffect(() => {
+
+        fetch(route('document.raw',{
+            document:props.document.id,
+            chapter:props.content.name
+        })).then(r=>r.json()).then(r=>console.log(r))
+
+
+
+    }, [])
+
 
     const [confirmUnsave, setConfirmUnsave] = useState<boolean>(false);
     const [sidebar, setSidebar] = useState<SideBarProps>({
         el: "table",
 
     });
-
-    const testContent = "<div data-type='ref-component' data-ref='figureTable' data-link='rera'></div>"
 
     const [tableHelper, setTableHelper] = useState<boolean>(false)
 
@@ -143,20 +142,18 @@ const DocumentEditor: React.FC = () => {
                     location.reload()
                 }, 1000);
             }
-        }
-        ,
+        },
         onUpdate({ editor }) {
             ensureUniqueId(editor);
             try {
                 editor.view.updateState(editor.state);
                 setContent(editor.getHTML())
+                console.log(TableHandler.getTableGroups())
             } catch (error) {
                 console.error("Update Error:", error);
             }
         },
         onPaste(e, s) {
-
-            // console.log(s.content.content, e)
         },
 
 

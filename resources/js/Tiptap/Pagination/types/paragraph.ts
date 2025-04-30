@@ -28,3 +28,11 @@ export type ParagraphLineInfo = {
      */
     offsetDistance: number;
 };
+
+
+export type ParagraphMeasurement = {
+    heights: number[];
+    totalHeight: number;
+    breakPoints: number[];
+    cumulativeHeights: number[];
+}

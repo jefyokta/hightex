@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ChapterController extends Controller
@@ -12,7 +10,6 @@ class ChapterController extends Controller
     private function getJson($document, $chapter)
     {
 
-        // dd($chapter,$document,str_contains($chapter, 'bab'));
         if (str_contains($chapter, 'bab')) {
             $path = storage_path("app/private/documents/$document/$chapter");
             // dd($path);
@@ -29,11 +26,26 @@ class ChapterController extends Controller
     {
         $content = $this->getJson($document, "$chapter.json");
 
-        $chapter = "Bab". implode(" ", explode('bab', $chapter));
+        $chapter = "Bab" . implode(" ", explode('bab', $chapter));
         return Inertia::render('Document/DocumentEditor', [
             'content' => $content,
             'document' => Document::find($document),
             'chapter' => $chapter,
+        ]);
+    }
+
+
+    public function raw($document, $chapter)
+    {
+
+        $content =  $this->getJson($document, $chapter . ".json");
+
+        return response()->json([
+            "data"=>[
+                "content"=>$content,
+                "chapter"=>$chapter,
+                "document"=>$document
+            ]
         ]);
     }
 }

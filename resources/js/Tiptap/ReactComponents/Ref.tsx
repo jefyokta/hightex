@@ -2,16 +2,15 @@ import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/Components/ui/popover"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select"
-import ChapterProvider from "@/Utilities/ChapterProvider"
+import { Provider } from "@/Provider"
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 import { useEffect, useState } from "react"
-import toast from "react-hot-toast"
 
 
 declare type RefType = "imageFigure" | "figureTable"
 export const RefComponent: React.FC<NodeViewProps> = ({ node, updateAttributes,deleteNode }) => {
 
-    const chapter = ChapterProvider.getchapter()
+    const chapter = Provider.chapter()
     const tiptapContainer = typeof document !== 'undefined' ? document.getElementById('container') : null;
     const [ref, setRef] = useState<string>(node.attrs.link || '');
     const [type, setType] = useState<RefType>(node.attrs.ref || 'imageFigure');
@@ -52,7 +51,6 @@ export const RefComponent: React.FC<NodeViewProps> = ({ node, updateAttributes,d
             <Popover>
                 <PopoverTrigger >
                     <a>{getLabel(ref, type)}</a>
-                    {/* <NodeViewContent></NodeViewContent> */}
                 </PopoverTrigger>
                 <PopoverContent className="w-64">
                     <div className="flex flex-col gap-2">

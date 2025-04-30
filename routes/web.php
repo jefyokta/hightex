@@ -44,25 +44,25 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
-Route::get('/stream', function () {
-    return \response()->stream(function () {
+// Route::get('/stream', function () {
+//     return \response()->stream(function () {
 
-        echo str_repeat('T', random_int(1, 1000));
-        flush();
-        sleep(2);
-        echo str_repeat('E', random_int(1, 1000));
-        flush();
-        sleep(2);
-        echo str_repeat('S', random_int(1, 1000));
-        flush();
-        sleep(2);
-        echo str_repeat('T', random_int(1, 1000));
-        flush();
+//         echo str_repeat('T', random_int(1, 1000));
+//         flush();
+//         sleep(2);
+//         echo str_repeat('E', random_int(1, 1000));
+//         flush();
+//         sleep(2);
+//         echo str_repeat('S', random_int(1, 1000));
+//         flush();
+//         sleep(2);
+//         echo str_repeat('T', random_int(1, 1000));
+//         flush();
 
-        sleep(2);
-        echo 'done';
-    });
-});
+//         sleep(2);
+//         echo 'done';
+//     });
+// });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', [
@@ -93,7 +93,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/{chapter}', [DocumentController::class, 'save']);
         Route::prefix("/{document}")->group(function () {
             Route::delete('/', [DocumentController::class, 'delete'])->name('document.delete');
-            Route::get('/{chapter}', [ChapterController::class, 'showChapter']);
+            Route::get('/{chapter}', [ChapterController::class, 'showChapter'])->name('document.show');
+            Route::get('/{chapter}/raw', [ChapterController::class, 'raw'])->name('document.raw');
             Route::get("/abstract");
             Route::get('/settings');
         });

@@ -70,8 +70,6 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
             return acc
           }, [] as NodePosArray)
 
-        //   console.log(mergedContentNodes)
-
 
 
         // const nodeHeights = measureNodeHeights(view,contentNodes);

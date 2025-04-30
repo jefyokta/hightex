@@ -8,8 +8,9 @@ import { TableMeasurement,TableGroup,TableSplitResult,TableMapping } from '../ty
 export class TableHandler {
     private static instance: TableHandler
     private measurementCache = new Map<string, TableMeasurement>()
-    private tableGroups = new Map<string, TableGroup>()
-    private minHeight = 20
+    private static tableGroups = new Map<string, TableGroup>()
+    private rowMinHeight = 20.5;
+    private captionMinHeight = 24;
 
     static getInstance(): TableHandler {
       if (!this.instance) {
@@ -117,10 +118,10 @@ export class TableHandler {
       }
 
       const originalFigure = figureAttrs.groupId
-        ? this.tableGroups.get(figureAttrs.groupId)?.originalTable || node
+        ? TableHandler.tableGroups.get(figureAttrs.groupId)?.originalTable || node
         : node
 
-      this.tableGroups.set(groupId, {
+      TableHandler.tableGroups.set(groupId, {
         tables,
         originalTable: originalFigure,
         positions: [],
@@ -142,7 +143,7 @@ export class TableHandler {
           }
           return true
         })
-        return height || this.minHeight
+        return height || this.rowMinHeight
       })
     }
 
@@ -158,15 +159,16 @@ export class TableHandler {
 
       if (pos != null) {
         const dom = view.nodeDOM(pos) as HTMLElement | null
-        if (dom) return dom.getBoundingClientRect().height || this.minHeight
+        console.log(dom?.getBoundingClientRect())
+        if (dom) return dom.getBoundingClientRect().height || this.captionMinHeight
       }
-      return this.minHeight
+      return this.captionMinHeight
     }
 
     private getHeaderRowCount(node: PMNode): number {
       let count = 0
       node.content.content.forEach(row => {
-        if (row.child(0)?.type.name === 'tableHeader') {
+        if (row.child(0) && row.child(0)?.type.name === 'tableHeader') {
           count++
         }
 
@@ -213,7 +215,7 @@ export class TableHandler {
       )
 
       if (!tableNodes.length) return undefined
-      const group = this.tableGroups.get(groupId)
+      const group = TableHandler.tableGroups.get(groupId)
       if (!group?.tables.length) return undefined
 
       const allRows = tableNodes.reduce((rows, { node }, index) => {
@@ -236,7 +238,7 @@ export class TableHandler {
 
     getTableGroup(table: PMNode): TableGroup | undefined {
       if (!table.attrs.groupId) return undefined
-      return this.tableGroups.get(table.attrs.groupId)
+      return TableHandler.tableGroups.get(table.attrs.groupId)
     }
 
     trackTableGroup(
@@ -245,10 +247,15 @@ export class TableHandler {
       positions: number[],
       originalTable: PMNode,
     ): void {
-      this.tableGroups.set(groupId, {
+      TableHandler.tableGroups.set(groupId, {
         tables,
         positions,
         originalTable,
       })
+    }
+
+    static getTableGroups(){
+
+        return this.tableGroups
     }
   }

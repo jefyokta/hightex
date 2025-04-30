@@ -3,12 +3,14 @@ export const style =
           #page {
             height: max-content;
           }
+            #container{
+                        counter-reset: h2-counter fig-counter caption-counter;
+}
 
           .page h1 {
             font-size: 14pt;
             font-weight: 700;
             text-align: center;
-            counter-reset: h2-counter fig-counter caption-counter;
             counter-increment: h1-counter;
             margin-bottom: 10pt;
             margin-top: 10pt;
@@ -91,7 +93,7 @@ export const style =
             font-weight: bold;
           }
         .page h3::before {
-            content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) ;
+            content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) " ";
             font-weight: bold;
           }
 

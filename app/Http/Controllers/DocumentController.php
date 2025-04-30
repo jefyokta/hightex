@@ -83,6 +83,7 @@ class DocumentController extends Controller
             sleep(2);
             $requestData = json_decode($request->getContent(), true);
 
+            $request->validate(['data'|'json']);
             if (!$requestData) {
                 return response()->json(['error' => 'Invalid JSON'], 400);
             }
