@@ -9,6 +9,8 @@ import DocumentList from "./DocumentList"
 
 const Document: React.FC = () => {
     const { props } = usePage<DocumentPageProps>()
+    fetch(route("document.chapters", { document: props.document || '' })).then(r=>r.json()).then(r=>console.log(r))
+
     return (
         <Authenticated>
             <Head title="Document" />

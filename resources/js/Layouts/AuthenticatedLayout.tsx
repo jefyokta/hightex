@@ -6,10 +6,10 @@ import { DashboardSidebar, DesktopSidebar, SidebarBody, SidebarLink, useSidebar 
 import { cn } from '@/lib/utils';
 import { PageProps, User } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from '@radix-ui/react-alert-dialog';
+
 import { IconArrowLeft, IconBrandTabler, IconImageInPicture, IconSettings, IconUserBolt } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
-import { ImageIcon, Sidebar, TestTube, User2, User2Icon, UserCircle } from 'lucide-react';
+import { ImageIcon, LogOut, Quote, QuoteIcon, } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
 export default function Authenticated({
@@ -25,13 +25,12 @@ export default function Authenticated({
     return (
         <div
             className={cn(
-                "mx-auto flex md:p-2 w-full  flex-1 flex-row  overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
+                "mx-auto flex md:p-2 w-full z-[10000] flex-1 flex-row  overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
                 "h-[100vh]",
             )}
         >
             <SidebarDemo user={user} />
             <Dashboard >
-
                 {children}
             </Dashboard>
         </div >
@@ -56,6 +55,14 @@ export const SidebarDemo: React.FC<{ user: User }> = ({ user }) => {
                 <ImageIcon className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
             ),
         },
+
+        {
+            label: "Reference",
+            href: route('profile.update'),
+            icon: (
+                <QuoteIcon className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+            ),
+        },
         {
             label: "Profile",
             href: route('profile.update'),
@@ -71,34 +78,23 @@ export const SidebarDemo: React.FC<{ user: User }> = ({ user }) => {
     return (
         <div
             className={cn(
-                "mx-auto flex top-5 left-5 justify-center rounded-full w-12 md:w-auto h-12  max-w-7xl  flex-col overflow-hidden  border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800 fixed",
-                "md:h-full md:rounded-md  md:relative md:top-0 md:-left-0",
+                "mx-auto flex top-5 left-5 justify-center rounded-full w-12 md:w-auto invisible  max-w-7xl  flex-col overflow-hidden  border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800 fixed",
+                "md:h-full md:rounded-md md:visible  md:relative md:top-0 md:-left-0",
             )}
         >
-            <DashboardSidebar open={open} setOpen={setOpen}>
-                <SidebarBody className="justify-between gap-10">
+            <DashboardSidebar open={open} setOpen={setOpen} >
+                <SidebarBody className="justify-between gap-10  ">
                     <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
                         {open ? <Logo /> : <LogoIcon />}
                         <div className="mt-8 flex flex-col gap-2">
                             {links.map((link, idx) => (
-
                                 <SidebarLink key={idx} link={link} />
                             ))}
                         </div>
                     </div>
                     <div>
-                        {/* <SidebarLink
-                            link={{
-                                label: user.name,
-                                href: route('profile.update'),
-                                icon: (
 
-                                    <UserCircle></UserCircle>
-                                ),
-                            }}
-                        /> */}
                         <UserSidebar />
-
                     </div>
 
                 </SidebarBody>
@@ -117,7 +113,7 @@ const UserSidebar: React.FC = () => {
         <button className="flex items-center  cursor-pointer max-w-max p-0  justify-start gap-2  group/sidebar py-2"
             onClick={() => setModal(!modal)}
         >
-            <UserCircle></UserCircle>
+            <LogOut />
             <motion.span
                 animate={{
                     display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -127,7 +123,7 @@ const UserSidebar: React.FC = () => {
 
             >{auth.user.name}</motion.span>
         </button>
-        <LogOutModal show={modal} setShowModal={setModal}/>
+        <LogOutModal show={modal} setShowModal={setModal} />
 
 
     </>)

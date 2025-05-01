@@ -5,11 +5,17 @@ import CreateDocument from "./Document/CreateDocument"
 import { DocumentData, PageProps } from "@/types"
 import DocumentList from "./Document/DocumentList"
 import { DocumentPageProps } from "@/types"
+import { useEffect } from "react"
 
 
 
 export default function Dashboard() {
     const { props } = usePage<DocumentPageProps>()
+
+    // useEffect(() => {
+        fetch(route("document.chapters", { document: props.document || '' })).then(r=>r.json()).then(r=>console.log(r))
+
+    // },[]);
 
     return (
         <Authenticated

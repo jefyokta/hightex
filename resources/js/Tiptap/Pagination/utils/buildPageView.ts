@@ -75,7 +75,7 @@ export const buildPageView = (editor: Editor, view: EditorView, options: Paginat
         // const nodeHeights = measureNodeHeights(view,contentNodes);
         const nodeHeights = measureNodeHeights(view,mergedContentNodes);
 
-
+        console.log(mergedContentNodes)
         // Record the cursor's old position
         const { tr, selection } = state;
         const oldCursorPos = selection.from;
@@ -281,8 +281,8 @@ const buildNewDocument = (
     let currentHeight = 0;
 
     const oldToNewPosMap: CursorMap = new Map<number, number>();
-    const pageOffset = 1,
-        bodyOffset = 1;
+    const pageOffset = 1
+    const bodyOffset = 1;
     let cumulativeNewDocPos = pageOffset + getMaybeNodeSize(currentPageHeader) + bodyOffset;
 
     // console.log("height",bodyPixelDimensions.bodyHeight);
@@ -302,7 +302,7 @@ const buildNewDocument = (
 const pageLimit = cmToPx(21.5)
 
 for (let i = 0; i < contentNodes.length; i++) {
-    const { node, pos: oldPos } = contentNodes[i]
+  const { node, pos: oldPos } = contentNodes[i]
   const baseHeight = nodeHeights[i]
   const isTable    = node.type.name === 'figureTable' || node.type.name === 'splittedTable'
   let height       = baseHeight
@@ -356,6 +356,7 @@ for (let i = 0; i < contentNodes.length; i++) {
     }
     const offsetInPage = currentPageContent.reduce((s, n) => s + n.nodeSize, 0)
     oldToNewPosMap.set(oldPos, cumulativeNewDocPos + offsetInPage)
+    console.log(oldToNewPosMap)
 
     continue
   }

@@ -1,93 +1,101 @@
 import React from "react";
 import { type Mark, Node } from "@tiptap/pm/model";
+import { JSONContent } from "@tiptap/react";
 
 export type TableOfContentProps = {
-  pages: Node[];
+    pages: JsonNode[];
 };
 
+type JsonNode = JSONContent
+
 type Heading = {
-  node: Node;
-  level: number;
-  page: number;
+    node: JsonNode;
+    level: number;
+    page: number;
 };
 
 export const TableOfContent: React.FC<TableOfContentProps> = ({ pages }) => {
-  const toc: Heading[] = [];
+    const toc: Heading[] = [];
 
-  pages.forEach((p, i) => {
-    if (p.child(0).type.name === "body") {
-      const pageContents = p.child(0).content.content;
-      pageContents.forEach((n) => {
-        if (n.type.name === "heading") {
-          toc.push({
-            node: n,
-            level: n.attrs.level,
-            page: i + 1,
-          });
+
+    const pagess = pages.filter(n => n.type == 'page')
+    pagess.forEach((p, i) => {
+
+        // console.log(p.content[0])
+        if (p && p.content && p.content[0]?.type === "body") {
+            const pageContents = p.content[0].content;
+            pageContents?.forEach((n) => {
+                if (n.type === "heading") {
+                    toc.push({
+                        node: n,
+                        level: n?.attrs?.level,
+                        page: i + 1,
+                    });
+                }
+            });
         }
-      });
-    }
-  });
+    });
+    function renderHeadingNode(node: JsonNode): React.ReactNode {
 
-  function renderHeadingNode(node: Node): React.ReactNode {
-    if (node.isText) {
-      return renderMarks(node.text || "", node.marks);
-    }
-    return node.content.content.map((child, i) => (
-      <React.Fragment key={i}>{renderHeadingNode(child)}</React.Fragment>
-    ));
-  }
-
-  function renderMarks(text: string, marks: readonly Mark[]): React.ReactNode {
-    return marks.reduceRight<React.ReactNode>((acc, mark) => {
-      switch (mark.type.name) {
-        case "bold":
-          return <strong>{acc}</strong>;
-        case "italic":
-          return <em>{acc}</em>;
-        case "underline":
-          return <u>{acc}</u>;
-        case "link":
-          return (
-            <a href={mark.attrs.href} target="_blank" rel="noopener noreferrer">
-              {acc}
-            </a>
-          );
-        default:
-          return acc;
-      }
-    }, text);
-  }
-
-  const renderTOC = (headings: Heading[], currentLevel = 1): React.ReactNode => {
-    const items: React.ReactNode[] = [];
-    let i = 0;
-
-    while (i < headings.length) {
-      const h = headings[i];
-      if (h.level < currentLevel) {
-        break;
-      } else if (h.level === currentLevel) {
-        let j = i + 1;
-        while (j < headings.length && headings[j].level > currentLevel) {
-          j++;
+        if (node.type == 'text') {
+            return node.text;
         }
-        const subHeadings = headings.slice(i + 1, j);
-
-        items.push(
-          <li key={i}>
-            {renderHeadingNode(h.node)} (page {h.page})
-            {subHeadings.length > 0 && renderTOC(subHeadings, currentLevel + 1)}
-          </li>
-        );
-
-        i = j;
-      } else {
-        i++;
-      }
+        return node.content?.map((child, i) => (
+            <React.Fragment key={i}>{renderHeadingNode(child)}</React.Fragment>
+        ));
     }
-    return <ul>{items}</ul>;
-  };
 
-  return <nav>{renderTOC(toc)}</nav>;
+    function renderMarks(text: string, marks: JsonNode[]): React.ReactNode {
+        return marks.map((mark) => {
+            switch (mark.type) {
+                case "bold":
+                    return <strong>{text}</strong>;
+                case "italic":
+                    return <em>{text}</em>;
+                case "underline":
+                    return <u>{text}</u>;
+                case "link":
+                    return (
+                        <a href={mark.attrs?.href} target="_blank" rel="noopener noreferrer">
+                            {text}
+                        </a>
+                    );
+                default:
+                    return text;
+            }
+        }, text);
+    }
+
+    const renderTOC = (headings: Heading[], currentLevel = 1): React.ReactNode => {
+        const items: React.ReactNode[] = [];
+        let i = 0;
+
+        while (i < headings.length) {
+            const h = headings[i];
+            if (h.level < currentLevel) {
+                break;
+            } else if (h.level === currentLevel) {
+                let j = i + 1;
+                while (j < headings.length && headings[j].level > currentLevel) {
+                    j++;
+                }
+                const subHeadings = headings.slice(i + 1, j);
+
+
+                items.push(
+                    <li key={i} className="list-decimal">
+                        {renderHeadingNode(h.node)}.............. ({h.page})
+                        {subHeadings.length > 0 && renderTOC(subHeadings, currentLevel + 1)}
+                    </li>
+                );
+
+                i = j;
+            } else {
+                i++;
+            }
+        }
+        return <ol>{items}</ol>;
+    };
+
+    return <nav>{renderTOC(toc)}</nav>;
 };

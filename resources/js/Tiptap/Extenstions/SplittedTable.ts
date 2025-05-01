@@ -5,6 +5,7 @@ import { SplittedTableComponent } from "../ReactComponents/SplittedTable";
 export const SplittedTable = FigureTable.extend({
     name:"splittedTable",
     content:"table",
+    group:"block",
     addAttributes() {
         return {
             groupId:{

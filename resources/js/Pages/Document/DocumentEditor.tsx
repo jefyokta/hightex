@@ -38,6 +38,7 @@ import { SplittedTable } from "@/Tiptap/Extenstions/SplittedTable"
 import { MathBlock } from "@/Tiptap/Extenstions/Math"
 import "katex/dist/katex.css";
 import { TableHandler } from "@/Tiptap/Pagination/utils/tableMeasure"
+import { TableManager } from "@/Utilities/TableManager"
 
 
 
@@ -77,10 +78,6 @@ const DocumentEditor: React.FC = () => {
         SplittedTable,
         MathBlock,
 
-
-
-
-
     ]
     ChapterProvider.setchapter(props.content.main.number)
     CiteManager.init(new CiteLocalStorage(`@book{butti2023high,
@@ -101,14 +98,10 @@ const DocumentEditor: React.FC = () => {
     }
 
     useEffect(() => {
-
-        fetch(route('document.raw',{
-            document:props.document.id,
-            chapter:props.content.name
-        })).then(r=>r.json()).then(r=>console.log(r))
-
-
-
+        fetch(route('document.raw', {
+            document: props.document.id,
+            chapter: props.content.name
+        })).then(r => r.json()).then(r => console.log(r))
     }, [])
 
 
@@ -131,7 +124,12 @@ const DocumentEditor: React.FC = () => {
 
         },
         onCreate: async ({ editor }) => {
+
+            editor.setEditable(false);
             ensureUniqueId(editor);
+            const pages =editor.state.doc.content.content
+            TableManager.init( pages)
+            // editor.view.
             if (localStorage.getItem('document-cache')) {
                 setConfirmUnsave(true)
             }
@@ -142,6 +140,7 @@ const DocumentEditor: React.FC = () => {
                     location.reload()
                 }, 1000);
             }
+            editor.setEditable(true)
         },
         onUpdate({ editor }) {
             ensureUniqueId(editor);
@@ -154,6 +153,12 @@ const DocumentEditor: React.FC = () => {
             }
         },
         onPaste(e, s) {
+        },
+        onBeforeCreate({ editor }) {
+
+
+            // editor.schema.nodeFromJSON('')
+
         },
 
 

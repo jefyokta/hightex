@@ -5,10 +5,11 @@ import { EditorView } from '@tiptap/pm/view'
 import { NodePosArray } from '../types/node'
 
 import { TableMeasurement,TableGroup,TableSplitResult,TableMapping } from '../types/table'
+import { Provider } from '@/Provider'
 export class TableHandler {
     private static instance: TableHandler
     private measurementCache = new Map<string, TableMeasurement>()
-    private static tableGroups = new Map<string, TableGroup>()
+    private static tableGroups = Provider.tableGroups()
     private rowMinHeight = 20.5;
     private captionMinHeight = 24;
 

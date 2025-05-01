@@ -6,6 +6,7 @@ use App\Models\Document;
 use App\Service\Compiler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -23,6 +24,31 @@ class DocumentController extends Controller
         return Inertia::render('Document/Document', [
             'document' => Auth::user()->document ?? false
         ]);
+    }
+
+    /**
+     * Get content of merged all chapter in a document
+     *
+     * @return \Illuminate\Support\Collection
+     */
+
+    private function wholeDocument($document): Collection
+    {
+        $pages = collect();
+        foreach ($this->chapters as $c) {
+            $c = storage_path("app/private/documents/{$document}/$c.json");
+            $json = file_get_contents($c);
+
+            $object = json_decode($json);
+            // dd($object);
+            $page = $object->contents;
+            if (is_array($page)) {
+                # code..
+                $pages =  $pages->merge($page);
+            }
+        }
+
+        return $pages;
     }
 
     private function filter($contents)
@@ -83,7 +109,7 @@ class DocumentController extends Controller
             sleep(2);
             $requestData = json_decode($request->getContent(), true);
 
-            $request->validate(['data'|'json']);
+            $request->validate(['data' | 'json']);
             if (!$requestData) {
                 return response()->json(['error' => 'Invalid JSON'], 400);
             }
@@ -179,5 +205,16 @@ class DocumentController extends Controller
             dd($th);
             throw $th;
         }
+    }
+
+    public function fullChapter(Document $document){
+        // 0/0;
+        // dd($document->author);
+        if (Auth::user()->id != $document->author) {
+            return response()->json(["data"=>[],"message"=>"unauthorized"],401);
+        }
+        // dd($document->id);
+        $chapters = $this->wholeDocument($document->id);
+        return response()->json(["data"=>$chapters,"message"=>'ok']);
     }
 }

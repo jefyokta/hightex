@@ -11,6 +11,7 @@ export interface FigureAttributes {
 }
 export const Figure = UUID.extend<FigureAttributes>({
   name: 'figure',
+  defining:true,
   addAttributes() {
     return {
     ...this.parent?.(),
