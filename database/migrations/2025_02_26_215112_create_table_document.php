@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('author');
             $table->text("abstract")->nullable();
+            $table->enum("type", ["an","au"])->default("");
             $table->text("keywords")->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();

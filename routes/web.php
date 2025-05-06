@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Foundation\Application;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -17,6 +19,12 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+    ]);
+});
+
+Route::get("/docs",function(){
+    return Inertia::render("Doc",[
+        "version"=>env("APP_VERSION")
     ]);
 });
 
@@ -38,12 +46,26 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
+// Route::get('/stream', function () {
+//     return \response()->stream(function () {
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard', [
-        'document' => Auth::user()->document
-    ]);
-})->middleware(['auth'])->name('dashboard');
+//         echo str_repeat('T', random_int(1, 1000));
+//         flush();
+//         sleep(2);
+//         echo str_repeat('E', random_int(1, 1000));
+//         flush();
+//         sleep(2);
+//         echo str_repeat('S', random_int(1, 1000));
+//         flush();
+//         sleep(2);
+//         echo str_repeat('T', random_int(1, 1000));
+//         flush();
+
+//         sleep(2);
+//         echo 'done';
+//     });
+// });
+
 Route::get('/test', function () {
     return  Inertia::render('Tes', ['name' => 'jefyokta', "chapter" => [
         "number" => 1,
@@ -51,7 +73,14 @@ Route::get('/test', function () {
     ]]);
 });
 Route::middleware('auth')->group(function () {
-    Route::get('/test',[DocumentController::class,'compile']);
+    Route::post('/image', [ImageController::class, 'store'])->name('image.store');
+    Route::get('/image', [ImageController::class, "images"])->name("image");
+    Route::get('/image/{image}', [ImageController::class, "show"])->name("image.show");
+
+    Route::get("/images", [ImageController::class, 'index'])->name('image.index');
+    Route::get('/dashboard',[DocumentController::class,'index'])->name('dashboard');
+
+    Route::get('/test', [DocumentController::class, 'compile']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -60,9 +89,11 @@ Route::middleware('auth')->group(function () {
         Route::get("/create", [DocumentController::class, 'create']);
         Route::post("/", [DocumentController::class, 'store'])->name('document.store');
         Route::post('/{chapter}', [DocumentController::class, 'save']);
+        Route::get("/{document}/show",[DocumentController::class,'fullChapter'])->name('document.chapters');
         Route::prefix("/{document}")->group(function () {
             Route::delete('/', [DocumentController::class, 'delete'])->name('document.delete');
-            Route::get('/{chapter}', [ChapterController::class, 'showChapter']);
+            Route::get('/{chapter}', [ChapterController::class, 'showChapter'])->name('document.show');
+            Route::get('/{chapter}/raw', [ChapterController::class, 'raw'])->name('document.raw');
             Route::get("/abstract");
             Route::get('/settings');
         });
