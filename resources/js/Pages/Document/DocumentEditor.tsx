@@ -27,6 +27,7 @@ import PrimaryButton from "@/Components/PrimaryButton"
 import DangerButton from "@/Components/DangerButton"
 import { Pagination } from "@/Tiptap/Extenstions/Pagination"
 import { CiteLocalStorage, CiteManager } from "bibtex.js"
+import { ensureUniqueId } from "@/Tiptap/utilities"
 // import {} from "prosemirror-pagination"
 
 
@@ -92,6 +93,7 @@ const DocumentEditor: React.FC = () => {
 
         },
         onCreate: async ({ editor }) => {
+            ensureUniqueId(editor)
             if (localStorage.getItem('document-cache')) {
                 setConfirmUnsave(true)
             }
