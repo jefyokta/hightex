@@ -17,7 +17,6 @@ const Page = new Plugin({
                     if (!changed || working) return
                     working = true
                     Paginate.set(contents,view).render()
-                   
                     working = false
 
                 },

@@ -22,6 +22,7 @@ export const style =
             white-space: pre-line;
           }
 
+
           .page h2 {
             font-size: 12pt;
             font-weight: 600;
@@ -52,12 +53,12 @@ export const style =
                 z-index: 2;
                 width:100%;
         }
-        .page figure[data-type="figureTable"] > figcaption {
+        .page figure[data-type="figureTable"]  figcaption {
                 width:14cm !important;
                 text-align:center;
                 counter-increment: caption-counter;
         }
-        .page figure[data-type="figureTable"] > figcaption::before {
+        .page figure[data-type="figureTable"]  figcaption::before {
         content: "Tabel " counter(h1-counter) "." counter(caption-counter) " ";
         }
 
@@ -69,6 +70,10 @@ export const style =
         widht:100%;
         display:flex;
         flex-direction:column;
+        }
+           .page figure[data-type="figureTable"] {
+           font-size:10pt;
+
         }
         .page th,
         .page td {

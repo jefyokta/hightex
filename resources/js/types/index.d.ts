@@ -41,3 +41,14 @@ interface DocumentPageProps extends PageProps {
         document: DocumentData | false
 
 }
+export interface ImagesProps extends PageProps{
+    images:Image[],
+    used:number,
+    limit:number
+}
+
+export type Image = {
+name:string,
+size:number,
+id:string
+}

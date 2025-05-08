@@ -30,10 +30,12 @@ const Images: React.FC = () => {
                         )}
                     />
                     <div className="py-10 flex justify-center space-x-5 flex-wrap gap-4 ">
-                        {props.images.map(i => {
+                        {props.images && (props.images.length > 0 ? props.images.map((i) => {
                             return <ExpandableCard key={i.name} description={`${(i.size / (1024 * 1024)).toFixed(2)}MB`} src={`/image/${i.id}`} title={`image#${i.id}`} id={i.id} />
 
-                        })}
+                        }) : <div className="text-sm text-slate-600">You Have No Any Image....</div>
+
+                        )}
 
                     </div>
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
